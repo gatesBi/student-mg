@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StudentMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		Z_STUDENT
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		CODE,	
+		NAME,	
+		AGE,	
+		GENDER,	
+		ADDRESS,	
+		PHONE,	
+		GRADE_ID,	
+		SUBJECT_TIME_PERIOD,	
+		SCHOOL_ID,	
+		IS_PAY,	
+		PAYMENT_AMOUNT,	
+		CREATE_TIME,	
+		UPDATE_TIME,	
+		STATUS,	
+		STUDENT_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{CODE},	
+		#{NAME},	
+		#{AGE},	
+		#{GENDER},	
+		#{ADDRESS},	
+		#{PHONE},	
+		#{GRADE_ID},	
+		#{SUBJECT_TIME_PERIOD},	
+		#{SCHOOL_ID},	
+		#{IS_PAY},	
+		#{PAYMENT_AMOUNT},	
+		#{CREATE_TIME},	
+		#{UPDATE_TIME},	
+		#{STATUS},	
+		#{STUDENT_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set STATUS = "1"
+		where 
+			STUDENT_ID = #{STUDENT_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		<trim prefix="set" suffixOverrides=",">
+			CODE = #{CODE},
+			NAME = #{NAME},
+			AGE = #{AGE},
+			GENDER = #{GENDER},
+			ADDRESS = #{ADDRESS},
+			PHONE = #{PHONE},
+			<if test="GRADE_ID != null and GRADE_ID != ''">
+				GRADE_ID = #{GRADE_ID},
+			</if>
+			<if test="SUBJECT_TIME_PERIOD != null and SUBJECT_TIME_PERIOD != ''">
+				SUBJECT_TIME_PERIOD = #{SUBJECT_TIME_PERIOD},
+			</if>
+			<if test="SCHOOL_ID != null and SCHOOL_ID != ''">
+				SCHOOL_ID = #{SCHOOL_ID},
+			</if>
+			<if test="IS_PAY != null and IS_PAY != ''">
+				IS_PAY = #{IS_PAY},
+			</if>
+			<if test="PAYMENT_AMOUNT != null and PAYMENT_AMOUNT != ''">
+				PAYMENT_AMOUNT = #{PAYMENT_AMOUNT},
+			</if>
+			<if test="CREATE_TIME != null and CREATE_TIME != ''">
+				CREATE_TIME = #{CREATE_TIME},
+			</if>
+			<if test="UPDATE_TIME != null and UPDATE_TIME != ''">
+				UPDATE_TIME = #{UPDATE_TIME},
+			</if>
+			<if test="STATUS != null and STATUS != ''">
+				STATUS = #{STATUS},
+			</if>
+		</trim>
+		where 
+		STUDENT_ID = #{STUDENT_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			STUDENT_ID = #{STUDENT_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		stu.STUDENT_ID AS STUDENT_ID,
+		stu.CODE AS STUCODE,	
+		stu.NAME AS STUNAME,	
+		stu.AGE AS STUAGE,	
+		stu.GENDER AS STUGENDER,	
+		stu.ADDRESS AS STUADDRESS,	
+		stu.PHONE AS STUPHONE,	
+		stu.GRADE_ID AS GRADE_ID,	
+		g.name AS GRADENAME,	
+		stu.SUBJECT_TIME_PERIOD AS SUBJECT_TIME_PERIOD,	
+		sch.name AS SCHOOLNAME,	
+		stu.IS_PAY AS IS_PAY,	
+		stu.PAYMENT_AMOUNT AS PAYMENT_AMOUNT,	
+		stu.CREATE_TIME AS CREATE_TIME,	
+		stu.UPDATE_TIME AS UPDATE_TIME
+		from Z_STUDENT stu
+		left join z_grade g on stu.GRADE_ID = g.GRADE_ID
+		left join z_school sch on stu.SCHOOL_ID = sch.SCHOOL_ID
+		where 1=1 and stu.STATUS = "0"
+		and stu.SCHOOL_ID = #{pd.SCHOOL_ID}
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				<!--	根据需求自己加检索条件
+					字段1 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					字段2 LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				-->
+				)
+		</if>
+		<if test="pd.studentName !=null and pd.studentName !=''">
+			and stu.NAME like CONCAT(CONCAT('%', #{pd.studentName}),'%')
+		</if>
+		<if test="pd.lastStart !=null and pd.lastStart !=''">
+			and stu.CREATE_TIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd !=null and pd.lastEnd !=''">
+			and stu.CREATE_TIME &lt;= #{pd.lastEnd} 
+		</if>
+		ORDER BY stu.CREATE_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			STUDENT_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- fh313596790qq(青苔) -->
+</mapper>

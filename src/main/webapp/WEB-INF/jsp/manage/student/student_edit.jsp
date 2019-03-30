@@ -65,11 +65,11 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">年级:</td>
 								<td>
-									<select name="GRADE_ID" ID="GRADE_ID" style="width:98%;">
+									<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" @change="changeGrade">
 										<option value="">--请选择--</option>
 										<c:forEach var="item" items="${gradeList }">
-											<option value="${item.GRADE_ID }"
-											<c:if test="${pd.GRADE_ID==item.GRADE_ID}">selected</c:if>>
+											<option value="${item.NAME }"
+											<c:if test="${pd.GRADE==item.NAME}">selected</c:if>>
 											${item.NAME }</option>
 										</c:forEach>
 									</select>
@@ -103,7 +103,7 @@
 								</td>
 							</tr>
 							
-							<tr>
+							<%-- <tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">年级:</td>
 								<td>
 									<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" @change="changeGrade">
@@ -115,7 +115,7 @@
 										</c:forEach>
 									</select>
 								</td>
-							</tr>
+							</tr> --%>
 							
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">科目</td>
@@ -176,7 +176,7 @@
 									</table>
 								</td>
 							</tr> -->
-							<input type="hidden" id="TEAANDSUBINFO" name="TEAANDSUBINFO" />
+							<input type="hidden" v-model="teaSubJsonString" id="TEAANDSUBINFO" name="TEAANDSUBINFO" />
 							<input type="hidden" id="KEYINFO" name="KEYINFO" />
 							<tr>
 								<td style="text-align: center;" colspan="10">
@@ -212,7 +212,6 @@
 						      width="220">
 						    </el-table-column>
 						    <el-table-column
-						      fixed="right"
 						      label="操作"
 						      width="220">
 						      <template slot-scope="scope">
@@ -364,9 +363,6 @@
 			$("#zhongxin2").show();
 		}
 		
-		var teaSubArray = [];//值
-		var keyArray = [];//key的数组
-		
 		$(function() {
 			$("#GRADE").trigger("change");
 			$("#SUBJECT").trigger("change");
@@ -387,6 +383,9 @@
 				  teatherlist:[],
 				  timeDuringlist:[],
 				  tableData:[],
+				  teaSubArray : [],
+				  keyArray : [],
+				  teaSubJsonString:'',
 			  },
 			  created:function(){
 				  /* this.subjectlist=[];
@@ -394,6 +393,11 @@
 				  this.timeDuringlist=[]; */
 			  },
 			  methods:{
+				  deleteRow:function(index, rows) {
+			        rows.splice(index, 1);
+			        //this.teaSubArray.splice(index, 1);
+			        //alert(this.teaSubArray);
+			      },
 				  changeParam:function(){
 					  var that = this;
 					  var url = '<%=basePath%>student/getParams.do';
@@ -432,7 +436,7 @@
 						this.changeParam();
 					},
 					
-					addStudentList:function(){
+					/* addStudentList:function(){
 					  	var that = this;
 						var gradeValue = that.GRADE;
 						var subjectValue = that.SUBJECT;
@@ -444,8 +448,6 @@
 						var subjectoptions = $("#SUBJECT option:selected");
 						var subjectText = subjectoptions.text();
 						
-						/* $("#TEATHER").val("");
-						$("#SUBJECT").val(""); */
 						
 						that.GRADE='';
 						that.SUBJECT='';
@@ -478,14 +480,41 @@
 							"SUBJECT_ID":subjectValue
 						};
 						var obj1 = {};
-						//obj1["\""+dateStr+"\""]=obj;
 						obj1[dateStr]=obj;
 						teaSubArray.push(obj1);
 						var teaSubstr = JSON.stringify(teaSubArray);
 						$("#TEAANDSUBINFO").val(teaSubstr);
+						that.tableData = teaSubstr;
 						keyArray.push(dateStr);
 						var keyArrayStr = JSON.stringify(keyArray);
 						$("#KEYINFO").val(keyArrayStr);
+					}, */
+					
+					addStudentList:function(){
+					  	var that = this;
+						var gradeValue = that.GRADE;
+						var subjectValue = that.SUBJECT;
+						var timeduringValue = that.TIMEDURING;
+						var teatherValue = that.TEATHER;
+						
+						//that.GRADE='';
+						that.SUBJECT='';
+						that.TIMEDURING='';
+						that.TEATHER='';
+						/* $("#TIMEDURING").attr("disabled",true);
+						$("#SUBJECT").attr("disabled",true);
+						$("#TEATHER").attr("disabled",true); */
+						that.changeParam();
+						var pa = {
+							"GRADE":gradeValue,
+							"TIMEDURING":timeduringValue,
+							"SUBJECT":subjectValue,
+							"TEATHER":teatherValue
+						}
+						that.tableData.push(pa);
+						//var paStr = JSON.stringify(pa);
+						that.teaSubArray.push(pa); 
+						that.teaSubJsonString = JSON.stringify(that.teaSubArray);
 					},
 					
 					delst:function(r){

@@ -83,6 +83,7 @@ public class StudentController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("STUDENT_ID", this.get32UUID());	//主键
+		pd.put("HEAD_ID", pd.getString("STUDENT_ID"));
 		pd.put("CREATE_TIME", DateUtil.getTime());	
 		pd.put("UPDATE_TIME", DateUtil.getTime());
 		pd.put("STATUS", "0");

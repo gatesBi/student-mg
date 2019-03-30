@@ -37,22 +37,22 @@ public class StudentService implements StudentManager{
 		if(teaandsubinfo != null && keyinfo != null && teaandsubinfo != "" && keyinfo != ""){
 			JSONArray jSONArray = new JSONArray();
 			jSONArray = JSONArray.parseArray(teaandsubinfo);
-			JSONArray jSONKeyArray = new JSONArray();
-			jSONKeyArray = JSONArray.parseArray(keyinfo);
 			for(int i = 0 ;i<jSONArray.size();i++){
 				JSONObject object = (JSONObject) jSONArray.get(i);
-				JSONObject object2 = (JSONObject) object.get(jSONKeyArray.get(i));
-				String TEATHER_ID = object2.getString("TEATHER_ID");
-				String SUBJECT_ID = object2.getString("SUBJECT_ID");
-				pd.put("STU_ID", pd.getString("STUDENT_ID"));
-				pd.put("SUB_ID", SUBJECT_ID);
-				pd.put("STUDENTSUBJECTASSOCIATE_ID", UuidUtil.get32UUID());
-				dao.save("StudentSubjectAssociateMapper.save", pd);
+				PageData schedulePd = new PageData();
+				schedulePd.put("GRADE", object.getString("GRADE"));
+				schedulePd.put("SUBJECT", object.getString("SUBJECT"));
+				schedulePd.put("TEATHER_NAME", object.getString("TEATHER"));
+				schedulePd.put("TIMEDURING", object.getString("TIMEDURING"));
+				List<PageData> pdList = (List<PageData>)dao.findForList("ScheduleMapper.listByParam", pd);
+				String classroom = pdList.get(0).getString("CLASSROOM");
+				schedulePd.put("CLASSROOM", classroom);
+				schedulePd.put("STUDENTLIST_ID", UuidUtil.get32UUID());
+				schedulePd.put("HEAD_ID", pd.getString("HEAD_ID"));
+				schedulePd.put("CREATE_TIME", pd.getString("CREATE_TIME"));
+				schedulePd.put("UPDATE_TIME", pd.getString("UPDATE_TIME"));
 				
-				pd.put("T_ID", TEATHER_ID);
-				pd.put("S_ID", pd.getString("STUDENT_ID"));
-				pd.put("TEATHERSTUDENTASSOCIATE_ID", UuidUtil.get32UUID());
-				dao.save("TeatherStudentAssociateMapper.save", pd);
+				dao.save("StudentListMapper.save", schedulePd);
 			}
 		}
 	}

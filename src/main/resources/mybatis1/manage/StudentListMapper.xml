@@ -14,7 +14,7 @@
 		GRADE,	
 		SUBJECT,	
 		TEATHER_NAME,	
-		CLASSROOM_ID,	
+		CLASSROOM,	
 		CREATE_TIME,	
 		UPDATE_TIME,	
 		STUDENTLIST_ID
@@ -27,7 +27,7 @@
 		#{GRADE},	
 		#{SUBJECT},	
 		#{TEATHER_NAME},	
-		#{CLASSROOM_ID},	
+		#{CLASSROOM},	
 		#{CREATE_TIME},	
 		#{UPDATE_TIME},	
 		#{STUDENTLIST_ID}
@@ -57,12 +57,11 @@
 		update
 		<include refid="tableName"></include>
 		set 
-			HEAD_ID = #{HEAD_ID},
-			TIMEDURING = #{TIMEDURING},
-			GRADE = #{GRADE},
-			SUBJECT = #{SUBJECT},
-			TEATHER_NAME = #{TEATHER_NAME},
-			CREATE_TIME = #{CREATE_TIME},
+			TIMEDURING = #{TIMEDURING},	
+			GRADE = #{GRADE},	
+			SUBJECT = #{SUBJECT},	
+			TEATHER_NAME = #{TEATHER},	
+			CLASSROOM = #{CLASSROOM},	
 			UPDATE_TIME = #{UPDATE_TIME}
 		where 
 		STUDENTLIST_ID = #{STUDENTLIST_ID}

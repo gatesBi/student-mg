@@ -10,3 +10,6 @@ target/
 
 *.jar
 *.war
+dbfh.properties
+dbconfig.properties
+.classpath

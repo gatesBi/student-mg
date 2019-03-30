@@ -10,8 +10,8 @@ import java.io.FileOutputStream;
 
 import javax.imageio.ImageIO;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+//import com.sun.image.codec.jpeg.JPEGCodec;
+//import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /** 
  * 说明：图片水印处理类 （报错注意：用安装版的jdk，不要用开发工具自带的jdk）
@@ -95,8 +95,8 @@ public class Watermark {
 	            //水印文件结束
 	            g.dispose();
 	            FileOutputStream out = new FileOutputStream(targetImg);
-	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-	            encoder.encode(image);
+//	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//	            encoder.encode(image);
 	            out.close();
 	        } catch (Exception e) {
 	            e.printStackTrace();
@@ -139,8 +139,8 @@ public class Watermark {
 	            g.drawString(pressText, x, y);
 	            g.dispose();
 	            FileOutputStream out = new FileOutputStream(targetImg);
-	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-	            encoder.encode(image);
+//	            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+//	            encoder.encode(image);
 	            out.close();
 	        } catch (Exception e) {
 	            System.out.println(e);

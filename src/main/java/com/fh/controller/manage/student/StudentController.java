@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -24,14 +23,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
 import com.fh.entity.system.User;
+import com.fh.service.manage.classroom.ClassroomManager;
 import com.fh.service.manage.grade.GradeManager;
 import com.fh.service.manage.schedule.ScheduleManager;
 import com.fh.service.manage.school.SchoolManager;
 import com.fh.service.manage.seat.SeatManager;
 import com.fh.service.manage.student.StudentManager;
+import com.fh.service.manage.studentlist.StudentListManager;
 import com.fh.service.manage.subject.SubjectManager;
 import com.fh.service.manage.teather.TeatherManager;
 import com.fh.service.manage.timeduring.TimeDuringManager;
@@ -69,6 +72,10 @@ public class StudentController extends BaseController {
 	private ScheduleManager scheduleService;
 	@Resource(name="timeduringService")
 	private TimeDuringManager timeduringService;
+	@Resource(name="studentlistService")
+	private StudentListManager studentlistService;
+	@Resource(name="classroomService")
+	private ClassroomManager classroomService;
 	
 	/**保存
 	 * @param
@@ -118,9 +125,12 @@ public class StudentController extends BaseController {
 	public ModelAndView edit() throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"修改Student");
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		pd.put("HEAD_ID", pd.getString("STUDENT_ID"));
 		pd.put("UPDATE_TIME", DateUtil.getTime());
 		studentService.edit(pd);
 		mv.addObject("msg","success");
@@ -180,6 +190,8 @@ public class StudentController extends BaseController {
 		List<PageData> subjectlist = subjectService.listAll(pd);
 		List<PageData> timeduringlist = timeduringService.listAll(pd);
 		mv.setViewName("manage/student/student_edit");
+		JSONArray jSONArray = new JSONArray();
+		pd.put("childList", jSONArray);
 		mv.addObject("msg", "save");
 		mv.addObject("pd", pd);
 		mv.addObject("gradeList", gradeList);
@@ -200,10 +212,28 @@ public class StudentController extends BaseController {
 		pd = this.getPageData();
 		pd = studentService.findById(pd);	//根据ID读取
 		List<PageData> gradeList = gradeService.listAll(pd);
+		
+		
+		PageData listpd = new PageData();
+		listpd.put("HEAD_ID", pd.getString("STUDENT_ID"));
+		List<PageData> childList = studentlistService.findByHeadId(listpd);
+		JSONArray jSONArray = new JSONArray();
+		for(PageData pd1:childList){
+			JSONObject object = new JSONObject();
+			object.put("GRADE", pd1.getString("GRADE"));
+			object.put("SUBJECT", pd1.getString("SUBJECT"));
+			object.put("TIMEDURING", pd1.getString("TIMEDURING"));
+			object.put("TEATHER", pd1.getString("TEATHER_NAME"));
+			object.put("STUDENTLIST_ID", pd1.getString("STUDENTLIST_ID"));
+			jSONArray.add(object);
+		}
+		//String jSONArrayString = jSONArray.toJSONString();
 		mv.setViewName("manage/student/student_edit");
 		mv.addObject("msg", "edit");
+		pd.put("childList", jSONArray);
 		mv.addObject("pd", pd);
 		mv.addObject("gradeList", gradeList);
+		//mv.addObject("childList", jSONArray);
 		return mv;
 	}	
 	
@@ -241,6 +271,60 @@ public class StudentController extends BaseController {
 		map.put("timeDuringlist", timeDuringlist);
 		return map;
 	}
+	
+	
+	
+	@RequestMapping(value="/checkIfHasSeat")
+	@ResponseBody
+	public HashMap checkIfHasSeat(@RequestBody HashMap<String,Object> map) throws Exception{
+		PageData pd = new PageData();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		//Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		pd.put("GRADE", (String)map.get("GRADE"));
+		pd.put("SUBJECT", (String)map.get("SUBJECT"));
+		pd.put("TEATHER", (String)map.get("TEATHER"));
+		pd.put("TIMEDURING", (String)map.get("TIMEDURING"));
+		List<PageData> pdList = scheduleService.listByParam(pd);
+		PageData pdClass = new PageData();
+		pdClass.put("NAME", pdList.get(0).getString("CLASSROOM"));
+		pdClass.put("SCHOOL_ID", pdList.get(0).getString("SCHOOL_ID"));
+		
+		pdClass = classroomService.findBySchoolAndName(pdClass);
+		String class_id = pdClass.getString("CLASSROOM_ID");
+		PageData pdSeat = new PageData();
+		pdSeat.put("CLASSROOM_ID", class_id);
+		List<PageData> seatList = seatService.listByClassroomAndStatus(pdSeat);
+		
+		if(seatList.size()>0){
+			map.put("hasSeat", "Y");
+		}else{
+			map.put("hasSeat", "N");
+		}
+		return map;
+	}
+	
+	
+	
+	/**删除studentlist
+	 * @param
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/deleteStudentList")
+	@ResponseBody
+	public HashMap deleteStudentList(@RequestBody HashMap<String,Object> map) throws Exception{
+		PageData pd = new PageData();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		pd = this.getPageData();
+		pd.put("STUDENTLIST_ID", (String)map.get("STUDENTLIST_ID"));
+		studentlistService.deleteById(pd);
+		return map;
+	}
+	
+	
+	
+	
 	
 	 /**批量删除
 	 * @param

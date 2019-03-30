@@ -16,7 +16,7 @@
 	<%@ include file="../../system/index/top.jsp"%>
 	<!-- 日期框 -->
 	<link rel="stylesheet" href="static/ace/css/datepicker.css" />
-	<link rel="stylesheet" href="static/element/index.css" />
+	<link rel="stylesheet" href="//unpkg.com/element-ui@2.7.0/lib/theme-chalk/index.css" />
 </head>
 <body class="no-skin">
 <!-- /section:basics/navbar.layout -->
@@ -189,6 +189,7 @@
 						
 						<el-table
 						    :data="tableData"
+						    :key="STUDENTLIST_ID"
 						    style="width: 100%"
 						    max-height="250">
 						    <el-table-column
@@ -379,6 +380,7 @@
 				  SUBJECT:'',
 				  TIMEDURING:'',
 				  TEATHER:'',
+				  STUDENTLIST_ID:'',
 				  subjectlist:[],
 				  teatherlist:[],
 				  timeDuringlist:[],
@@ -391,12 +393,31 @@
 				  /* this.subjectlist=[];
 				  this.teatherlist=[];
 				  this.timeDuringlist=[]; */
+				  this.GRADE = '${pd.GRADE}';
+				  this.changeParam();
+				  if(this.GRADE != '' && this.GRADE != null){
+					    $("#TIMEDURING").attr("disabled",false);
+						$("#SUBJECT").attr("disabled",false);
+						$("#TEATHER").attr("disabled",false);
+				  }
+				  this.tableData = ${pd.childList};
 			  },
 			  methods:{
 				  deleteRow:function(index, rows) {
+					var that = this;
 			        rows.splice(index, 1);
-			        //this.teaSubArray.splice(index, 1);
-			        //alert(this.teaSubArray);
+			        var url = '<%=basePath%>student/deleteStudentList.do';
+			        var param = rows[index];
+			        axios.post(url, param)
+					  .then(function (response) {
+						  /* var result = response.data;
+						  that.subjectlist = result.subjectlist;
+						  that.timeDuringlist = result.timeDuringlist;
+						  that.teatherlist = result.teatherlist;
+					    console.log(response); */
+					  }).catch(function (error) { 
+					    console.log(error);
+					  });
 			      },
 				  changeParam:function(){
 					  var that = this;
@@ -497,24 +518,61 @@
 						var timeduringValue = that.TIMEDURING;
 						var teatherValue = that.TEATHER;
 						
-						//that.GRADE='';
-						that.SUBJECT='';
-						that.TIMEDURING='';
-						that.TEATHER='';
-						/* $("#TIMEDURING").attr("disabled",true);
-						$("#SUBJECT").attr("disabled",true);
-						$("#TEATHER").attr("disabled",true); */
-						that.changeParam();
-						var pa = {
-							"GRADE":gradeValue,
-							"TIMEDURING":timeduringValue,
-							"SUBJECT":subjectValue,
-							"TEATHER":teatherValue
-						}
-						that.tableData.push(pa);
-						//var paStr = JSON.stringify(pa);
-						that.teaSubArray.push(pa); 
-						that.teaSubJsonString = JSON.stringify(that.teaSubArray);
+						
+						
+						
+						
+						
+						
+						var url = '<%=basePath%>student/checkIfHasSeat.do';
+						  var param = {
+							  GRADE:gradeValue,
+							  SUBJECT:subjectValue,
+							  TIMEDURING:timeduringValue,
+							  TEATHER:teatherValue,
+						  };
+						  axios.post(url, param)
+						  .then(function (response) {
+							  var result = response.data;
+							  if(result.hasSeat == "N"){
+								that.$message.error('所选条件对应教室无座位剩余');
+								return;
+							  }else{
+								  if(that.tableData.length>0){
+									for(var i = 0; i<that.tableData.length; i++){
+										if(that.tableData[i].GRADE == gradeValue
+											&& that.tableData[i].SUBJECT == subjectValue
+											&& that.tableData[i].TIMEDURING == timeduringValue
+											&& that.tableData[i].TEATHER == teatherValue){
+											that.$message.error('不可重复添加');
+											return;
+										}
+									}
+								}
+								//that.GRADE='';
+									that.SUBJECT='';
+									that.TIMEDURING='';
+									that.TEATHER='';
+									/* $("#TIMEDURING").attr("disabled",true);
+									$("#SUBJECT").attr("disabled",true);
+									$("#TEATHER").attr("disabled",true); */
+									that.changeParam();
+									var pa = {
+										"GRADE":gradeValue,
+										"TIMEDURING":timeduringValue,
+										"SUBJECT":subjectValue,
+										"TEATHER":teatherValue
+									}
+									that.tableData.push(pa);
+									//var paStr = JSON.stringify(pa);
+									that.teaSubArray.push(pa); 
+									that.teaSubJsonString = JSON.stringify(that.teaSubArray);
+							  }
+						    //console.log(response);
+						  }).catch(function (error) { 
+						    console.log(error);
+						  });
+						
 					},
 					
 					delst:function(r){

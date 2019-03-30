@@ -1,8 +1,11 @@
 package com.fh.service.manage.seat.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.util.PageData;
@@ -86,6 +89,7 @@ public class SeatService implements SeatManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("SeatMapper.deleteAll", ArrayDATA_IDS);
 	}
+
 	
 }
 

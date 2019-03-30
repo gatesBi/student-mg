@@ -1,8 +1,11 @@
 package com.fh.service.manage.studentlist.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.util.PageData;
@@ -74,8 +77,9 @@ public class StudentListService implements StudentListManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public PageData findByHeadId(PageData pd)throws Exception{
-		return (PageData)dao.findForObject("StudentListMapper.findByHeadId", pd);
+	@SuppressWarnings("unchecked")
+	public List<PageData> findByHeadId(PageData pd)throws Exception{
+		return (List<PageData>)dao.findForList("StudentListMapper.findByHeadId", pd);
 	}
 	
 	/**批量删除
@@ -84,6 +88,12 @@ public class StudentListService implements StudentListManager{
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("StudentListMapper.deleteAll", ArrayDATA_IDS);
+	}
+
+	@Override
+	public void deleteById(PageData pd) throws Exception {
+		dao.delete("StudentListMapper.deleteById", pd);
+		
 	}
 	
 }

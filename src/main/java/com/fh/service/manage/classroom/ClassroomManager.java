@@ -48,6 +48,12 @@ public interface ClassroomManager{
 	 */
 	public PageData findById(PageData pd)throws Exception;
 	
+	/**
+	 * @param pd
+	 * @throws Exception
+	 */
+	public PageData findBySchoolAndName(PageData pd)throws Exception;
+	
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception

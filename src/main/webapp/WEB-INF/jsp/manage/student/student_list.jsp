@@ -66,19 +66,12 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;">序号</th>
-									<!-- <th class="center">学号</th> -->
 									<th class="center">姓名</th>
-									<!-- <th class="center">年龄</th>
-									<th class="center">性别</th>
-									<th class="center">住址</th> -->
 									<th class="center">电话</th>
 									<th class="center">年级</th>
-									<!-- <th class="center">科目时间段</th> -->
 									<th class="center">学校</th>
-									<!-- <th class="center">是否缴费</th>
-									<th class="center">缴费金额</th> -->
 									<th class="center">创建时间</th>
-									<!-- <th class="center">更新时间</th> -->
+									<th class="center">更新时间</th>
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -94,25 +87,12 @@
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${var.STUDENT_ID}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<%-- <td class='center'>${var.STUCODE}</td> --%>
 											<td class='center'>${var.STUNAME}</td>
-											<%-- <td class='center'>${var.STUAGE}</td> --%>
-											<%-- <td class='center'>
-												<c:if test="${var.STUGENDER=='M'}">男</c:if>
-												<c:if test="${var.STUGENDER=='F'}">女</c:if>
-											</td>
-											<td class='center'>${var.STUADDRESS}</td> --%>
 											<td class='center'>${var.STUPHONE}</td>
-											<td class='center'>${var.GRADENAME}</td>
-											<%-- <td class='center'>${var.SUBJECT_TIME_PERIOD}</td> --%>
+											<td class='center'>${var.GRADE}</td>
 											<td class='center'>${var.SCHOOLNAME}</td>
-											<%-- <td class='center'>
-												<c:if test="${var.IS_PAY=='Y'}">已缴费</c:if>
-												<c:if test="${var.IS_PAY=='N'}"><span style="color:red;">未缴费</span></c:if>
-											</td>
-											<td class='center'>${var.PAYMENT_AMOUNT}</td> --%>
 											<td class='center'>${var.CREATE_TIME}</td>
-											<%-- <td class='center'>${var.UPDATE_TIME}</td> --%>
+											<td class='center'>${var.UPDATE_TIME}</td>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>

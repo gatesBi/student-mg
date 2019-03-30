@@ -42,6 +42,8 @@ public interface SeatManager{
 	 */
 	public List<PageData> listAll(PageData pd)throws Exception;
 	
+	public List<PageData> listByClassroomAndStatus(PageData pd)throws Exception;
+	
 	/**通过id获取数据
 	 * @param pd
 	 * @throws Exception
@@ -53,6 +55,7 @@ public interface SeatManager{
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+	
 	
 }
 

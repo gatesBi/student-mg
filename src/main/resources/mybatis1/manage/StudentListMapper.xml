@@ -114,6 +114,16 @@
 		<include refid="tableName"></include>
 	</select>
 	
+	
+	<!-- 根据id删除 -->
+	<delete id="deleteById" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+		STUDENTLIST_ID = #{STUDENTLIST_ID}
+	</delete>
+	
+	
 	<!-- 批量删除 -->
 	<delete id="deleteAll" parameterType="String">
 		delete from
@@ -124,6 +134,8 @@
                  #{item}
 		</foreach>
 	</delete>
+	
+	
 	
 	<!-- fh313596790qq(青苔) -->
 </mapper>

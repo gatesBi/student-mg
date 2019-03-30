@@ -9,17 +9,10 @@
 	
 	<!-- 字段 -->
 	<sql id="Field">
-		CODE,	
 		NAME,	
-		AGE,	
-		GENDER,	
-		ADDRESS,	
 		PHONE,	
-		GRADE_ID,	
-		SUBJECT_TIME_PERIOD,	
+		GRADE,	
 		SCHOOL_ID,	
-		IS_PAY,	
-		PAYMENT_AMOUNT,	
 		CREATE_TIME,	
 		UPDATE_TIME,	
 		STATUS,	
@@ -28,17 +21,10 @@
 	
 	<!-- 字段值 -->
 	<sql id="FieldValue">
-		#{CODE},	
 		#{NAME},	
-		#{AGE},	
-		#{GENDER},	
-		#{ADDRESS},	
 		#{PHONE},	
-		#{GRADE_ID},	
-		#{SUBJECT_TIME_PERIOD},	
+		#{GRADE},	
 		#{SCHOOL_ID},	
-		#{IS_PAY},	
-		#{PAYMENT_AMOUNT},	
 		#{CREATE_TIME},	
 		#{UPDATE_TIME},	
 		#{STATUS},	
@@ -70,26 +56,13 @@
 		update
 		<include refid="tableName"></include>
 		<trim prefix="set" suffixOverrides=",">
-			CODE = #{CODE},
 			NAME = #{NAME},
-			AGE = #{AGE},
-			GENDER = #{GENDER},
-			ADDRESS = #{ADDRESS},
 			PHONE = #{PHONE},
-			<if test="GRADE_ID != null and GRADE_ID != ''">
-				GRADE_ID = #{GRADE_ID},
-			</if>
-			<if test="SUBJECT_TIME_PERIOD != null and SUBJECT_TIME_PERIOD != ''">
-				SUBJECT_TIME_PERIOD = #{SUBJECT_TIME_PERIOD},
+			<if test="GRADE != null and GRADE != ''">
+				GRADE = #{GRADE},
 			</if>
 			<if test="SCHOOL_ID != null and SCHOOL_ID != ''">
 				SCHOOL_ID = #{SCHOOL_ID},
-			</if>
-			<if test="IS_PAY != null and IS_PAY != ''">
-				IS_PAY = #{IS_PAY},
-			</if>
-			<if test="PAYMENT_AMOUNT != null and PAYMENT_AMOUNT != ''">
-				PAYMENT_AMOUNT = #{PAYMENT_AMOUNT},
 			</if>
 			<if test="CREATE_TIME != null and CREATE_TIME != ''">
 				CREATE_TIME = #{CREATE_TIME},
@@ -119,22 +92,13 @@
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select
 		stu.STUDENT_ID AS STUDENT_ID,
-		stu.CODE AS STUCODE,	
 		stu.NAME AS STUNAME,	
-		stu.AGE AS STUAGE,	
-		stu.GENDER AS STUGENDER,	
-		stu.ADDRESS AS STUADDRESS,	
 		stu.PHONE AS STUPHONE,	
-		stu.GRADE_ID AS GRADE_ID,	
-		g.name AS GRADENAME,	
-		stu.SUBJECT_TIME_PERIOD AS SUBJECT_TIME_PERIOD,	
+		stu.GRADE AS GRADE,	
 		sch.name AS SCHOOLNAME,	
-		stu.IS_PAY AS IS_PAY,	
-		stu.PAYMENT_AMOUNT AS PAYMENT_AMOUNT,	
 		stu.CREATE_TIME AS CREATE_TIME,	
 		stu.UPDATE_TIME AS UPDATE_TIME
 		from Z_STUDENT stu
-		left join z_grade g on stu.GRADE_ID = g.GRADE_ID
 		left join z_school sch on stu.SCHOOL_ID = sch.SCHOOL_ID
 		where 1=1 and stu.STATUS = "0"
 		and stu.SCHOOL_ID = #{pd.SCHOOL_ID}

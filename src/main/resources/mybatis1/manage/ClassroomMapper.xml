@@ -60,6 +60,18 @@
 			CLASSROOM_ID = #{CLASSROOM_ID}
 	</select>
 	
+	<!-- 通过ID获取数据 -->
+	<select id="findBySchoolAndName" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			SCHOOL_ID = #{SCHOOL_ID}
+			and 
+			NAME = #{NAME}
+	</select>
+	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select

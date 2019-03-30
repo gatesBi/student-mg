@@ -52,13 +52,20 @@ public interface StudentListManager{
 	 * @param pd
 	 * @throws Exception
 	 */
-	public PageData findByHeadId(PageData pd)throws Exception;
+	public List<PageData> findByHeadId(PageData pd)throws Exception;
+	
+	/**根据id删除 
+	 * @param id
+	 * @throws Exception
+	 */
+	public void deleteById(PageData pd)throws Exception;
 	
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception;
+	
 	
 }
 

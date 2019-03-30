@@ -33,8 +33,7 @@ public class StudentService implements StudentManager{
 	public void save(PageData pd)throws Exception{
 		dao.save("StudentMapper.save", pd);
 		String teaandsubinfo = pd.getString("TEAANDSUBINFO");
-		String keyinfo = pd.getString("KEYINFO");
-		if(teaandsubinfo != null && keyinfo != null && teaandsubinfo != "" && keyinfo != ""){
+		if(!teaandsubinfo.isEmpty()){
 			JSONArray jSONArray = new JSONArray();
 			jSONArray = JSONArray.parseArray(teaandsubinfo);
 			for(int i = 0 ;i<jSONArray.size();i++){
@@ -44,7 +43,8 @@ public class StudentService implements StudentManager{
 				schedulePd.put("SUBJECT", object.getString("SUBJECT"));
 				schedulePd.put("TEATHER_NAME", object.getString("TEATHER"));
 				schedulePd.put("TIMEDURING", object.getString("TIMEDURING"));
-				List<PageData> pdList = (List<PageData>)dao.findForList("ScheduleMapper.listByParam", pd);
+				schedulePd.put("SCHOOL_ID", pd.getString("SCHOOL_ID"));
+				List<PageData> pdList = (List<PageData>)dao.findForList("ScheduleMapper.listByParam", schedulePd);
 				String classroom = pdList.get(0).getString("CLASSROOM");
 				schedulePd.put("CLASSROOM", classroom);
 				schedulePd.put("STUDENTLIST_ID", UuidUtil.get32UUID());
@@ -71,6 +71,29 @@ public class StudentService implements StudentManager{
 	 */
 	public void edit(PageData pd)throws Exception{
 		dao.update("StudentMapper.edit", pd);
+		String teaandsubinfo = pd.getString("TEAANDSUBINFO");
+		if(!teaandsubinfo.isEmpty()){
+			JSONArray jSONArray = new JSONArray();
+			jSONArray = JSONArray.parseArray(teaandsubinfo);
+			for(int i = 0 ;i<jSONArray.size();i++){
+				JSONObject object = (JSONObject) jSONArray.get(i);
+				PageData schedulePd = new PageData();
+				schedulePd.put("GRADE", object.getString("GRADE"));
+				schedulePd.put("SUBJECT", object.getString("SUBJECT"));
+				schedulePd.put("TEATHER_NAME", object.getString("TEATHER"));
+				schedulePd.put("TIMEDURING", object.getString("TIMEDURING"));
+				schedulePd.put("SCHOOL_ID", pd.getString("SCHOOL_ID"));
+				List<PageData> pdList = (List<PageData>)dao.findForList("ScheduleMapper.listByParam", schedulePd);
+				String classroom = pdList.get(0).getString("CLASSROOM");
+				schedulePd.put("CLASSROOM", classroom);
+				schedulePd.put("STUDENTLIST_ID", UuidUtil.get32UUID());
+				schedulePd.put("HEAD_ID", pd.getString("HEAD_ID"));
+				schedulePd.put("CREATE_TIME", pd.getString("CREATE_TIME"));
+				schedulePd.put("UPDATE_TIME", pd.getString("CREATE_TIME"));
+				
+				dao.save("StudentListMapper.save", schedulePd);
+			}
+		}
 	}
 	
 	/**列表

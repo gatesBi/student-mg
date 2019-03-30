@@ -1,8 +1,11 @@
 package com.fh.service.manage.classroom.impl;
 
 import java.util.List;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.util.PageData;
@@ -76,6 +79,11 @@ public class ClassroomService implements ClassroomManager{
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("ClassroomMapper.deleteAll", ArrayDATA_IDS);
+	}
+
+	@Override
+	public PageData findBySchoolAndName(PageData pd) throws Exception {
+		return (PageData)dao.findForObject("ClassroomMapper.findBySchoolAndName", pd);
 	}
 	
 }

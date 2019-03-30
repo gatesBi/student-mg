@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head> 
+    <head>
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 
@@ -22,8 +22,8 @@
 
         <meta name="description" content="学生选座" />
 
-        <link rel="stylesheet" type="text/css" href="jq22.css" />
-        <script src="jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="<%=basePath%>student/jq22.css" />
+        <script src="<%=basePath%>student/jquery.min.js"></script>
 
         <style type="text/css">
 
@@ -119,7 +119,7 @@
         </div>
 
 
-        <script type="text/javascript" src="jquery.seat-charts.min.js"></script>
+        <script type="text/javascript" src="<%=basePath%>student/jquery.seat-charts.min.js"></script>
 
         <script type="text/javascript">
 
@@ -135,33 +135,34 @@
 
 				var list1 = ${list1};
 				var disableList = ${disableList};
-				
+
                 var sc = $('#seat_area').seatCharts({
 
-                    /* map: [//座位结构图 a 代表座位; 下划线 "_" 代表过道
-
-                        'cccccccccc',
-
-                        'cccccccccc',
-
-                        '__________',
-
-                        'cccccccc__',
-
-                        'cccccccccc',
-
-                        'cccccccccc',
-
-                        'cccccccccc',
-
-                        'cccccccccc',
-
-                        'cccccccccc',
-
-                        'cc__cc__cc'
-
-                    ], */
+                    //  map: [//座位结构图 a 代表座位; 下划线 "_" 代表过道
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     '__________',
+                    //
+                    //     'cccccccc__',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cccccccccc',
+                    //
+                    //     'cc__cc__cc'
+                    //
+                    // ],
                     map: list1,
+
 
                     naming: {//设置行列等信息
 

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.fh.util.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -23,12 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
 import com.fh.entity.system.User;
-import com.fh.util.AppUtil;
-import com.fh.util.Const;
-import com.fh.util.ObjectExcelView;
-import com.fh.util.PageData;
-import com.fh.util.Jurisdiction;
-import com.fh.util.Tools;
 import com.fh.service.manage.classroom.ClassroomManager;
 import com.fh.service.manage.seat.SeatManager;
 
@@ -219,6 +214,32 @@ public class SeatController extends BaseController {
 		dataMap.put("varList", varList);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,dataMap);
+		return mv;
+	}
+
+	/**选座
+	 * @param page
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/chooseSeat")
+	public ModelAndView chooseSeat(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"列表Seat");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;} //校验权限(无权查看时页面会有提示,如果不注释掉这句代码就无法进入列表页面,所以根据情况是否加入本句代码)
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+
+		PageData pd = this.getPageData();
+
+        List<PageData>	pageDatas = seatService.listAll(pd);	//列出Seat列表
+		List<String> seatList = SeatUtil.getSeatList(pageDatas);
+		List<String> disableSeatList = SeatUtil.getDisableSeatList(pageDatas);
+
+		ModelAndView mv = this.getModelAndView();
+
+		mv.addObject("list1", seatList);
+		mv.addObject("disableList", disableSeatList);
+		mv.setViewName("manage/student/chooseseat/index");
+
+
 		return mv;
 	}
 	

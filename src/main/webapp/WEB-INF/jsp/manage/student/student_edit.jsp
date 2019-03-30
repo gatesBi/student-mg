@@ -16,6 +16,7 @@
 	<%@ include file="../../system/index/top.jsp"%>
 	<!-- 日期框 -->
 	<link rel="stylesheet" href="static/ace/css/datepicker.css" />
+	<link rel="stylesheet" href="static/element/index.css" />
 </head>
 <body class="no-skin">
 <!-- /section:basics/navbar.layout -->
@@ -97,7 +98,7 @@
 								<td colspan="2" style="text-align: left;;padding-top: 13px;">
 									<div>
 										<span style="color:red">添加时间段、年级、科目、老师信息</span>
-										<a class="btn btn-mini btn-primary" onclick="savesubtea();">添加</a>
+										<a class="btn btn-mini btn-primary" @click="addStudentList">添加</a>
 									</div>
 								</td>
 							</tr>
@@ -105,7 +106,7 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">年级:</td>
 								<td>
-									<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" onchange="changeGrade()">
+									<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" @change="changeGrade">
 										<option value="">--请选择--</option>
 										<c:forEach var="item" items="${gradeList }">
 											<option value="${item.NAME }"
@@ -115,29 +116,31 @@
 									</select>
 								</td>
 							</tr>
+							
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">科目</td>
+								<td>
+									<select v-model="SUBJECT" name="SUBJECT" ID="SUBJECT" style="width:98%;" @change="changeParam()" disabled>
+										<option value="">--请选择--</option>
+										<%-- <c:forEach var="item" items="${subjectlist }">
+											<option value="${item.NAME }">${item.NAME }</option>
+										</c:forEach> --%>
+										<option v-for="subject in subjectlist">{{subject.NAME}}</option>
+									</select>
+								</td>
+							</tr>
+							
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">时间段</td>
 								<td>
-									<select v-model="TIMEDURING" name="TIMEDURING" ID="TIMEDURING" style="width:98%;" onchange="changeParam()">
+									<select v-model="TIMEDURING" name="TIMEDURING" ID="TIMEDURING" style="width:98%;" @change="changeParam()" disabled>
 										<option value="">--请选择--</option>
 										<%-- <c:forEach var="item" items="${timeduringlist }">
 											<option value="${item.TIMEDURING }"
 											<c:if test="${pd.TIMEDURING==item.TIMEDURING}">selected</c:if>>
 											${item.TIMEDURING }</option>
 										</c:forEach> --%>
-										<option v-for="timeduring in timeduringlist">{{subject.TIMEDURING}}</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">科目</td>
-								<td>
-									<select v-model="SUBJECT" name="SUBJECT" ID="SUBJECT" style="width:98%;" onchange="changeParam()" disabled>
-										<option value="">--请选择--</option>
-										<%-- <c:forEach var="item" items="${subjectlist }">
-											<option value="${item.NAME }">${item.NAME }</option>
-										</c:forEach> --%>
-										<option v-for="subject in subjectlist">{{subject.TIMEDURING}}</option>
+										<option v-for="timeduring in timeDuringlist" v-bind:value="timeduring.TIMEDURING">{{timeduring.TIMEDURING}}</option>
 									</select>
 								</td>
 							</tr>
@@ -145,23 +148,26 @@
 							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">老师</td>
 								<td>
-									<select v-model="TEATHER" name="TEATHER" ID="TEATHER" style="width:98%;" onchange="changeParam()" disabled>
+									<select v-model="TEATHER" name="TEATHER" ID="TEATHER" style="width:98%;" @change="changeParam()" disabled>
 										<option value="">--请选择--</option>
-										<c:forEach var="item" items="${teatherlist }">
+										<%-- <c:forEach var="item" items="${teatherlist }">
 											<option value="${item.NAME }">${item.NAME }</option>
-										</c:forEach>
+										</c:forEach> --%>
+										<option v-for="teather in teatherlist">{{teather.NAME}}</option>
 									</select>
 								</td>
 							</tr>
 							
 							
-							<tr>
+							<!-- <tr>
 								<td colspan="2">
 									<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">
 										<thead>
 											<tr>
-												<th class="center">老师</th>
+												<th class="center">年级</th>
 												<th class="center">科目</th>
+												<th class="center">时间段</th>
+												<th class="center">老师</th>
 												<th class="center">操作</th>
 											</tr>
 										</thead>
@@ -169,7 +175,7 @@
 										</tbody>
 									</table>
 								</td>
-							</tr>
+							</tr> -->
 							<input type="hidden" id="TEAANDSUBINFO" name="TEAANDSUBINFO" />
 							<input type="hidden" id="KEYINFO" name="KEYINFO" />
 							<tr>
@@ -179,6 +185,48 @@
 								</td>
 							</tr>
 						</table>
+						
+						
+						<el-table
+						    :data="tableData"
+						    style="width: 100%"
+						    max-height="250">
+						    <el-table-column
+						      prop="GRADE"
+						      label="年级"
+						      width="200">
+						    </el-table-column>
+						    <el-table-column
+						      prop="SUBJECT"
+						      label="科目"
+						      width="120">
+						    </el-table-column>
+						    <el-table-column
+						      prop="TIMEDURING"
+						      label="时间段"
+						      width="200">
+						    </el-table-column>
+						    <el-table-column
+						      prop="TEATHER"
+						      label="老师"
+						      width="220">
+						    </el-table-column>
+						    <el-table-column
+						      fixed="right"
+						      label="操作"
+						      width="220">
+						      <template slot-scope="scope">
+						        <el-button
+						          @click.native.prevent="deleteRow(scope.$index, tableData)"
+						          type="text"
+						          size="small">
+						          	移除
+						        </el-button>
+						      </template>
+						    </el-table-column>
+						  </el-table>
+						
+						
 						</div>
 						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green">提交中...</h4></div>
 					</form>
@@ -205,6 +253,7 @@
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript" src="static/js/vuejs/vuejs-2.5.16.js"></script>
 	<script type="text/javascript" src="static/js/vuejs/axios-0.18.0.js"></script>
+	<script type="text/javascript" src="static/element/index.js"></script>
 	
 		<script type="text/javascript">
 		$(top.hangge());
@@ -317,149 +366,14 @@
 		
 		var teaSubArray = [];//值
 		var keyArray = [];//key的数组
-		function savesubtea(){
-			var teatherValue = $("#TEATHER").val();
-			var subjectValue = $("#SUBJECT").val();
-			var teatheroptions=$("#TEATHER option:selected");
-			var teatherText = teatheroptions.text();
-			var subjectoptions = $("#SUBJECT option:selected");
-			var subjectText = subjectoptions.text();
-			
-			$("#TEATHER").val("");
-			$("#SUBJECT").val("");
-			var dateStr=dateToString(new Date());
-			$("#teasublist").append(
-			"<tr>"
-			+"<td class='center'>"+teatherText+"</td>"
-			+"<td class='center'>"+subjectText+"</td>"
-			+"<td class='center'>"
-				+"<div class=\"hidden-sm hidden-xs btn-group\">"
-					+"<input type=\"hidden\" value=\""+dateStr+ "\" />"
-					+"<a class=\"btn btn-xs btn-danger\" onclick=\"delst(this);\">"
-						+"<i class=\"ace-icon fa fa-trash-o bigger-120\" title=\"删除\"></i>"
-					+"</a>"
-				+"</div>"
-				+"</td>"
-				+"</tr>"
-			)
-			
-			var obj = {
-				"TEATHER_ID":teatherValue,
-				"SUBJECT_ID":subjectValue
-			};
-			var obj1 = {};
-			//obj1["\""+dateStr+"\""]=obj;
-			obj1[dateStr]=obj;
-			teaSubArray.push(obj1);
-			var teaSubstr = JSON.stringify(teaSubArray);
-			$("#TEAANDSUBINFO").val(teaSubstr);
-			keyArray.push(dateStr);
-			var keyArrayStr = JSON.stringify(keyArray);
-			$("#KEYINFO").val(keyArrayStr);
-		}
-		
-		function delst(r){
-			var str = r.previousSibling;
-			var key = str.value;//取得要删除的key值
-			var i=r.parentNode.parentNode.parentNode.rowIndex;
-			document.getElementById('teasublist').deleteRow(i-1);
-			for(var i =0;i<teaSubArray.length;i++){
-				if(teaSubArray[i][key] != null){
-				  //delete teaSubArray[i];
-				  teaSubArray.splice(i,1);
-				  keyArray.splice(i,1);
-				  //delete keyArray[i];
-				}
-			} 
-		}
-		
-		function dateToString(now){
-		    var year = now.getFullYear();
-		    var month =(now.getMonth() + 1).toString();
-		    var day = (now.getDate()).toString();
-		    var hour = (now.getHours()).toString();
-		    var minute = (now.getMinutes()).toString();
-		    var second = (now.getSeconds()).toString();
-		    var millisecond = (now.getMilliseconds()).toString();
-		    if (month.length == 1) {
-		        month = "0" + month;
-		    }
-		    if (day.length == 1) {
-		        day = "0" + day;
-		    }
-		    if (hour.length == 1) {
-		    	hour = "0" + hour;
-		    }
-		    if (minute.length == 1) {
-		    	minute = "0" + minute;
-		    }
-		    if (second.length == 1) {
-		    	second = "0" + second;
-		    }
-		    if (millisecond.length == 1) {
-		    	second = "00" + second;
-		    }
-		    if (millisecond.length == 2) {
-		    	second = "0" + second;
-		    }
-		     var dateTime = year + month + day + hour + minute + second + millisecond;
-		     return dateTime;
-		}
-		
-		function changeParam(){
-			var grade = $("#GRADE").val();
-			var timeduring = $("#TIMEDURING").val();
-			var subject = $("#SUBJECT").val();
-			var teather = $("#TEATHER").val();
-			$.ajax({
-			    url: "<%=basePath%>student/getParams",
-			    data: {
-			    	GRADE: grade,
-			    	TIMEDURING: timeduring,
-			    	SUBJECT: subject,
-			    	TEATHER: teather,
-			    	},
-			    type: "POST",
-			    dataType: "json",
-			    success: function(data) {
-			        // data = jQuery.parseJSON(data);  //dataType指明了返回数据为json类型，故不需要再反序列化
-			    }
-			});
-		}
-		
-		function changeGrade(){
-			if($("#GRADE").val() != ''){
-				$("#TIMEDURING").attr("disabled",false);
-				$("#SUBJECT").attr("disabled",false);
-				$("#TEATHER").attr("disabled",false);
-			}else{
-				$("#TIMEDURING").attr("disabled",true);
-				$("#SUBJECT").attr("disabled",true);
-				$("#TEATHER").attr("disabled",true);
-				$("#TIMEDURING").val('');
-				$("#SUBJECT").val('');
-				$("#TEATHER").val('');
-			}
-		}
 		
 		$(function() {
 			$("#GRADE").trigger("change");
-			$("#TIMEDURING").trigger("change");
 			$("#SUBJECT").trigger("change");
+			$("#TIMEDURING").trigger("change");
 			$("#TEATHER").trigger("change");
 			//日期框
 			$('.date-picker').datepicker({autoclose: true,todayHighlight: true});
-			<%-- $("#SUBJECT").change(function(){
-				var subject = this.val();
-				$.ajax({
-				  type: "post",
-				  url: "<%=basePath%>student/getTeather.do",
-				  dataType: "json",
-				  data:{
-					  SUBJECT_ID:subject
-				  },
-				});
-			}) --%>
 		});
 		
 		var vm = new Vue({
@@ -467,33 +381,163 @@
 			  data: {
 				  GRADE:'',
 				  SUBJECT:'',
+				  TIMEDURING:'',
 				  TEATHER:'',
-				  GRADE:'',
 				  subjectlist:[],
 				  teatherlist:[],
 				  timeDuringlist:[],
+				  tableData:[],
+			  },
+			  created:function(){
+				  /* this.subjectlist=[];
+				  this.teatherlist=[];
+				  this.timeDuringlist=[]; */
 			  },
 			  methods:{
 				  changeParam:function(){
 					  var that = this;
-					  var url = '<%=basePath%>student/getTeather.do';
+					  var url = '<%=basePath%>student/getParams.do';
 					  var param = {
 							  GRADE:that.GRADE,
 							  SUBJECT:that.SUBJECT,
-							  SUBJECT:that.SUBJECT,
-							  SUBJECT:that.SUBJECT,
+							  TIMEDURING:that.TIMEDURING,
+							  TEATHER:that.TEATHER,
 					  };
-					  axios.post(url, {
-					    firstName: 'Fred',
-					    lastName: 'Flintstone'
-					  })
+					  axios.post(url, param)
 					  .then(function (response) {
+						  var result = response.data;
+						  that.subjectlist = result.subjectlist;
+						  that.timeDuringlist = result.timeDuringlist;
+						  that.teatherlist = result.teatherlist;
 					    console.log(response);
-					  }).catch(function (error) {
+					  }).catch(function (error) { 
 					    console.log(error);
 					  });
-				  }
-			  }
+				  },
+				  
+				  changeGrade:function(){
+					  	var that = this;
+						if($("#GRADE").val() != ''){
+							$("#TIMEDURING").attr("disabled",false);
+							$("#SUBJECT").attr("disabled",false);
+							$("#TEATHER").attr("disabled",false);
+						}else{
+							$("#TIMEDURING").attr("disabled",true);
+							$("#SUBJECT").attr("disabled",true);
+							$("#TEATHER").attr("disabled",true);
+							that.TIMEDURING = '';
+							that.SUBJECT = '';
+							that.TEATHER = '';
+						}
+						this.changeParam();
+					},
+					
+					addStudentList:function(){
+					  	var that = this;
+						var gradeValue = that.GRADE;
+						var subjectValue = that.SUBJECT;
+						var timeduringValue = that.TIMEDURING;
+						var teatherValue = that.TEATHER;
+						
+						var teatheroptions=$("#TEATHER option:selected");
+						var teatherText = teatheroptions.text();
+						var subjectoptions = $("#SUBJECT option:selected");
+						var subjectText = subjectoptions.text();
+						
+						/* $("#TEATHER").val("");
+						$("#SUBJECT").val(""); */
+						
+						that.GRADE='';
+						that.SUBJECT='';
+						that.TIMEDURING='';
+						that.TEATHER='';
+						$("#TIMEDURING").attr("disabled",true);
+						$("#SUBJECT").attr("disabled",true);
+						$("#TEATHER").attr("disabled",true);
+						
+						var dateStr=that.dateToString(new Date());
+						$("#teasublist").append(
+						"<tr>"
+						+"<td class='center'>"+gradeValue+"</td>"
+						+"<td class='center'>"+subjectValue+"</td>"
+						+"<td class='center'>"+timeduringValue+"</td>"
+						+"<td class='center'>"+teatherValue+"</td>"
+						+"<td class='center'>"
+							+"<div class=\"hidden-sm hidden-xs btn-group\">"
+								+"<input type=\"hidden\" value=\""+dateStr+ "\" />"
+								+"<a class=\"btn btn-xs btn-danger\" @click=\"delst(row)\">"
+									+"<i class=\"ace-icon fa fa-trash-o bigger-120\" title=\"删除\"></i>"
+								+"</a>"
+							+"</div>"
+							+"</td>"
+						+"</tr>"
+						)
+						
+						var obj = {
+							"TEATHER_ID":teatherValue,
+							"SUBJECT_ID":subjectValue
+						};
+						var obj1 = {};
+						//obj1["\""+dateStr+"\""]=obj;
+						obj1[dateStr]=obj;
+						teaSubArray.push(obj1);
+						var teaSubstr = JSON.stringify(teaSubArray);
+						$("#TEAANDSUBINFO").val(teaSubstr);
+						keyArray.push(dateStr);
+						var keyArrayStr = JSON.stringify(keyArray);
+						$("#KEYINFO").val(keyArrayStr);
+					},
+					
+					delst:function(r){
+						var str = r.previousSibling;
+						var key = str.value;//取得要删除的key值
+						var i=r.parentNode.parentNode.parentNode.rowIndex;
+						document.getElementById('teasublist').deleteRow(i-1);
+						for(var i =0;i<teaSubArray.length;i++){
+							if(teaSubArray[i][key] != null){
+							  //delete teaSubArray[i];
+							  teaSubArray.splice(i,1);
+							  keyArray.splice(i,1);
+							  //delete keyArray[i];
+							}
+						} 
+					},
+					
+					dateToString:function(now){
+					    var year = now.getFullYear();
+					    var month =(now.getMonth() + 1).toString();
+					    var day = (now.getDate()).toString();
+					    var hour = (now.getHours()).toString();
+					    var minute = (now.getMinutes()).toString();
+					    var second = (now.getSeconds()).toString();
+					    var millisecond = (now.getMilliseconds()).toString();
+					    if (month.length == 1) {
+					        month = "0" + month;
+					    }
+					    if (day.length == 1) {
+					        day = "0" + day;
+					    }
+					    if (hour.length == 1) {
+					    	hour = "0" + hour;
+					    }
+					    if (minute.length == 1) {
+					    	minute = "0" + minute;
+					    }
+					    if (second.length == 1) {
+					    	second = "0" + second;
+					    }
+					    if (millisecond.length == 1) {
+					    	second = "00" + second;
+					    }
+					    if (millisecond.length == 2) {
+					    	second = "0" + second;
+					    }
+					     var dateTime = year + month + day + hour + minute + second + millisecond;
+					     return dateTime;
+					},
+					
+			  },
+			  
 			})
 		</script>
 </body>

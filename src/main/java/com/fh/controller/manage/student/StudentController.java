@@ -15,9 +15,11 @@ import javax.annotation.Resource;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -210,12 +212,16 @@ public class StudentController extends BaseController {
 	 */
 	@RequestMapping(value="/getParams")
 	@ResponseBody
-	public Object getParams() throws Exception{
+	public HashMap getParams(@RequestBody HashMap<String,Object> map) throws Exception{
 		PageData pd = new PageData();
 		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
-		Map<String,Object> map = new HashMap<String,Object>();
+		//Map<String,Object> map = new HashMap<String,Object>();
 		pd = this.getPageData();
 		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		pd.put("GRADE", (String)map.get("GRADE"));
+		pd.put("SUBJECT", (String)map.get("SUBJECT"));
+		pd.put("TEATHER", (String)map.get("TEATHER"));
+		pd.put("TIMEDURING", (String)map.get("TIMEDURING"));
 		List<PageData> pdList = scheduleService.listByParam(pd);
 		
 		List<String> subjectPdList = new ArrayList<String>();
@@ -232,7 +238,7 @@ public class StudentController extends BaseController {
 		map.put("subjectlist", subjectlist);
 		map.put("teatherlist", teatherlist);
 		map.put("timeDuringlist", timeDuringlist);
-		return AppUtil.returnObject(pd, map);
+		return map;
 	}
 	
 	 /**批量删除

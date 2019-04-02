@@ -103,11 +103,11 @@
 														<i class="ace-icon fa fa-pencil-square-o bigger-120" title="编辑"></i>
 													</a>
 													</c:if>
-													<c:if test="${QX.toChooseSeat == 1 }">
+													<%-- <c:if test="${QX.toChooseSeat == 1 }">
 													<a class="btn btn-xs btn-Info" title="选座" onclick="toChooseSeat('${var.STUDENT_ID}');">
 														<i class="ace-icon fa glyphicon-search bigger-120"></i>
 													</a>
-													</c:if>
+													</c:if> --%>
 													<c:if test="${QX.del == 1 }">
 													<a class="btn btn-xs btn-danger" onclick="del('${var.STUDENT_ID}');">
 														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
@@ -130,7 +130,7 @@
 																</a>
 															</li>
 															</c:if>
-															<c:if test="${QX.toChooseSeat == 1 }">
+															<%-- <c:if test="${QX.toChooseSeat == 1 }">
 																<li>
 																	<a style="cursor:pointer;" onclick="toChooseSeat('${var.STUDENT_ID}');" class="tooltip-success" data-rel="tooltip" title="选座">
 																		<span class="green">
@@ -138,7 +138,7 @@
 																		</span>
 																	</a>
 																</li>
-															</c:if>
+															</c:if> --%>
 															<c:if test="${QX.del == 1 }">
 															<li>
 																<a style="cursor:pointer;" onclick="del('${var.STUDENT_ID}');" class="tooltip-error" data-rel="tooltip" title="删除">

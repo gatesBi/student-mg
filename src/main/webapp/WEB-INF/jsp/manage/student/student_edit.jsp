@@ -406,11 +406,11 @@
 			  methods:{
 				  deleteRow:function(index, rows) {
 					var that = this;
-			        rows.splice(index, 1);
 			        var url = '<%=basePath%>student/deleteStudentList.do';
 			        var param = rows[index];
 			        axios.post(url, param)
 					  .then(function (response) {
+						  rows.splice(index, 1);
 						  /* var result = response.data;
 						  that.subjectlist = result.subjectlist;
 						  that.timeDuringlist = result.timeDuringlist;
@@ -518,7 +518,12 @@
 						var subjectValue = that.SUBJECT;
 						var timeduringValue = that.TIMEDURING;
 						var teatherValue = that.TEATHER;
-						
+						for(var i = 0;i<that.tableData.length;i++){
+							if(timeduringValue == that.tableData[i].TIMEDURING){
+								that.$message.warning('已存在相同时间段，不可重复添加');
+								return;
+							}
+						}
 						if(gradeValue == "" || subjectValue == "" || timeduringValue == "" || teatherValue == ""){
 							that.$message.warning('年级、科目、时间段、老师必填');
 							return;

@@ -59,10 +59,6 @@
 								<td><input type="text" name="ADDRESS" id="ADDRESS" value="${pd.ADDRESS}" maxlength="500" placeholder="这里输入住址" title="住址" style="width:98%;"/></td>
 							</tr> --%>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">电话:</td>
-								<td><input type="number" name="PHONE" id="PHONE" value="${pd.PHONE}" maxlength="18" placeholder="这里输入电话" title="电话" style="width:98%;"/></td>
-							</tr>
-							<tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">年级:</td>
 								<td>
 									<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" @change="changeGrade">
@@ -75,6 +71,11 @@
 									</select>
 								</td>
 							</tr>
+							<tr>
+								<td style="width:75px;text-align: right;padding-top: 13px;">电话:</td>
+								<td><input type="number" name="PHONE" id="PHONE" value="${pd.PHONE}" maxlength="18" placeholder="这里输入电话" title="电话" style="width:98%;"/></td>
+							</tr>
+							
 							<%-- <tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">科目时间段:</td>
 								<td><input type="text" name="SUBJECT_TIME_PERIOD" id="SUBJECT_TIME_PERIOD" value="${pd.SUBJECT_TIME_PERIOD}" maxlength="50" placeholder="这里输入科目时间段" title="科目时间段" style="width:98%;"/></td>
@@ -309,7 +310,7 @@
 				$("#ADDRESS").focus();
 			return false;
 			}
-			if($("#PHONE").val()==""){
+			/* if($("#PHONE").val()==""){
 				$("#PHONE").tips({
 					side:3,
 		            msg:'请输入电话',
@@ -318,7 +319,7 @@
 		        });
 				$("#PHONE").focus();
 			return false;
-			}
+			} */
 			if($("#GRADE_ID").val()==""){
 				$("#GRADE_ID").tips({
 					side:3,
@@ -518,7 +519,10 @@
 						var timeduringValue = that.TIMEDURING;
 						var teatherValue = that.TEATHER;
 						
-						
+						if(gradeValue == "" || subjectValue == "" || timeduringValue == "" || teatherValue == ""){
+							that.$message.warning('年级、科目、时间段、老师必填');
+							return;
+						}
 						
 						
 						

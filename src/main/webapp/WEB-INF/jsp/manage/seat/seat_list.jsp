@@ -70,8 +70,7 @@
 									<th class="center">座位排</th>
 									<th class="center">座位列</th>
 									<th class="center">所在教室</th>
-									<th class="center">是否可用</th>
-									<th class="center">学生姓名</th>
+									<!-- <th class="center">学生姓名</th> -->
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -94,11 +93,7 @@
 													<c:if test="${var.CLASSROOM_ID==item.CLASSROOM_ID}">${item.NAME }</c:if>
 												</c:forEach>
 											</td>
-											<td class='center'>
-											<c:if test="${var.STATUS=='0'}">可用</c:if>
-											<c:if test="${var.STATUS=='1'}">不可用</c:if>
-											</td>
-											<td class='center'>${var.STU_ID}</td>
+											<%-- <td class='center'>${var.STU_ID}</td> --%>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>

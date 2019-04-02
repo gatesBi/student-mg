@@ -47,6 +47,14 @@ public class SeatService implements SeatManager{
 		dao.update("SeatMapper.edit", pd);
 	}
 	
+	/**修改
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void editByParams(PageData pd)throws Exception{
+		dao.update("SeatMapper.editByParams", pd);
+	}
+	
 	/**列表
 	 * @param page
 	 * @throws Exception
@@ -74,6 +82,11 @@ public class SeatService implements SeatManager{
 		return (List<PageData>)dao.findForList("SeatMapper.listByClassroomAndStatus", pd);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<PageData> listByClassroomId(PageData pd)throws Exception{
+		return (List<PageData>)dao.findForList("SeatMapper.listByClassroomId", pd);
+	}
+	
 	/**通过id获取数据
 	 * @param pd
 	 * @throws Exception
@@ -88,6 +101,16 @@ public class SeatService implements SeatManager{
 	 */
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("SeatMapper.deleteAll", ArrayDATA_IDS);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PageData> listByParams(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("SeatMapper.listByParams", pd);
+	}
+
+	@Override
+	public PageData findByStuIdAndTimeduring(PageData pd) throws Exception {
+		return (PageData)dao.findForObject("SeatMapper.findByStuIdAndTimeduring", pd);
 	}
 
 	

@@ -122,6 +122,14 @@ public class StudentService implements StudentManager{
 		return (PageData)dao.findForObject("StudentMapper.findById", pd);
 	}
 	
+	/**通过name获取数据
+	 * @param pd
+	 * @throws Exception
+	 */
+	public PageData findByName(PageData pd)throws Exception{
+		return (PageData)dao.findForObject("StudentMapper.findByName", pd);
+	}
+	
 	/**批量删除
 	 * @param ArrayDATA_IDS
 	 * @throws Exception

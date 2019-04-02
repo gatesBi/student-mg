@@ -88,6 +88,16 @@
 			STUDENT_ID = #{STUDENT_ID}
 	</select>
 	
+	<!-- 通过NAME获取数据 -->
+	<select id="findByName" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			NAME = #{NAME}
+	</select>
+	
 	<!-- 列表 -->
 	<select id="datalistPage" parameterType="page" resultType="pd">
 		select

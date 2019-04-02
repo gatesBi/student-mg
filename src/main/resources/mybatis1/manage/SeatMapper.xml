@@ -11,9 +11,9 @@
 	<sql id="Field">
 		SEAT_ROW,
 		SEAT_COLUMN,
-		STATUS,
 		STU_ID,
 		CLASSROOM_ID,
+		TIMEDURING,
 		SEAT_ID
 	</sql>
 	
@@ -21,9 +21,9 @@
 	<sql id="FieldValue">
 		#{SEAT_ROW},
 		#{SEAT_COLUMN},
-		#{STATUS},	
 		#{STU_ID},	
-		#{CLASSROOM_ID},	
+		#{CLASSROOM_ID},
+		#{TIMEDURING},	
 		#{SEAT_ID}
 	</sql>
 	
@@ -53,7 +53,7 @@
 		set 
 			SEAT_ROW = #{SEAT_ROW},
 			SEAT_COLUMN = #{SEAT_COLUMN},
-			STATUS = #{STATUS},
+			TIMEDURING = #{TIMEDURING},
 			STU_ID = #{STU_ID}
 			where 
 			SEAT_ID = #{SEAT_ID}
@@ -96,14 +96,87 @@
 		<include refid="tableName"></include>
 	</select>
 	
-	<!-- 根据classroomid与status查询是否还有座位 -->
+	<!-- 根据classroomid与时间段查询是否还有座位 -->
 	<select id="listByClassroomAndStatus" parameterType="pd" resultType="pd">
 		select
 		<include refid="Field"></include>
 		from 
 		<include refid="tableName"></include>
 		where CLASSROOM_ID = #{CLASSROOM_ID}
-		and STATUS = '0'
+		and (TIMEDURING NOT LIKE CONCAT(CONCAT('%', #{TIMEDURING}),'%') or TIMEDURING is null)
+		order by SEAT_ROW
+	</select>
+	
+	<select id="listByClassroomId" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where CLASSROOM_ID = #{CLASSROOM_ID}
+	</select>
+	
+	<select id="listByParams" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="SEAT_ROW != null and SEAT_ROW !=''">
+			and SEAT_ROW = #{SEAT_ROW}
+		</if>
+		<if test="SEAT_COLUMN != null and SEAT_COLUMN !=''">
+			and SEAT_COLUMN = #{SEAT_COLUMN}
+		</if>
+		<if test="STU_ID != null and STU_ID !=''">
+			and STU_ID = #{STU_ID}
+		</if>
+		<if test="CLASSROOM_ID != null and CLASSROOM_ID !=''">
+			and CLASSROOM_ID = #{CLASSROOM_ID}
+		</if>
+		<if test="TIMEDURING != null and TIMEDURING !=''">
+			and TIMEDURING = #{TIMEDURING}
+		</if>
+		<if test="SEAT_ID != null and SEAT_ID !=''">
+			and SEAT_ID = #{SEAT_ID}
+		</if>
+	</select>
+	
+	<select id="findByStuIdAndTimeduring" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="STU_ID != null and STU_ID !=''">
+			and STU_ID LIKE CONCAT(CONCAT('%', #{STU_ID}),'%')
+		</if>
+		<if test="TIMEDURING != null and TIMEDURING !=''">
+			and TIMEDURING LIKE CONCAT(CONCAT('%', #{TIMEDURING}),'%')
+		</if>
+	</select>
+	
+	<select id="editByParams" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		<trim prefix="set" suffixOverrides=",">  
+			<if test="SEAT_ROW != null and SEAT_ROW !=''">
+				SEAT_ROW = #{SEAT_ROW},
+			</if>
+			<if test="SEAT_COLUMN != null and SEAT_COLUMN !=''">
+				SEAT_COLUMN = #{SEAT_COLUMN},
+			</if>
+			<if test="STU_ID != null and STU_ID !=''">
+				STU_ID = #{STU_ID},
+			</if>
+			<if test="CLASSROOM_ID != null and CLASSROOM_ID !=''">
+				CLASSROOM_ID = #{CLASSROOM_ID},
+			</if>
+			<if test="TIMEDURING != null and TIMEDURING !=''">
+				TIMEDURING = #{TIMEDURING},
+			</if>
+		</trim>
+		where 
+		SEAT_ID = #{SEAT_ID}
 	</select>
 	
 	<!-- 批量删除 -->

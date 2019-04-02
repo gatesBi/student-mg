@@ -120,7 +120,7 @@
 			and SUBJECT = #{SUBJECT}
 		</if>
 		<if test="TEATHER_NAME != null and TEATHER_NAME !=''">
-			and TIMEDURING = #{TIMEDURING}
+			and TEATHER_NAME = #{TEATHER_NAME}
 		</if>
 	</select>
 	

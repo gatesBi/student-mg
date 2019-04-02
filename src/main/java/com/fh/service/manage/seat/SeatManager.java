@@ -30,6 +30,12 @@ public interface SeatManager{
 	 */
 	public void edit(PageData pd)throws Exception;
 	
+	/**通过参数修改
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void editByParams(PageData pd)throws Exception;
+	
 	/**列表
 	 * @param page
 	 * @throws Exception
@@ -44,11 +50,26 @@ public interface SeatManager{
 	
 	public List<PageData> listByClassroomAndStatus(PageData pd)throws Exception;
 	
+	public List<PageData> listByClassroomId(PageData pd)throws Exception;
+	
+	/**
+	 * 用这个来查询数据,通用
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> listByParams(PageData pd)throws Exception;
+	
 	/**通过id获取数据
 	 * @param pd
 	 * @throws Exception
 	 */
 	public PageData findById(PageData pd)throws Exception;
+	/**通过时间段与stuid来查询座位是否已经被选择
+	 * @param pd
+	 * @throws Exception
+	 */
+	public PageData findByStuIdAndTimeduring(PageData pd)throws Exception;
 	
 	/**批量删除
 	 * @param ArrayDATA_IDS

@@ -258,14 +258,22 @@ public class StudentController extends BaseController {
 		List<String> subjectPdList = new ArrayList<String>();
 		List<String> teatherPdList = new ArrayList<String>();
 		List<String> timeDuringPdList = new ArrayList<String>();
-		for(PageData p : pdList){
-			subjectPdList.add(p.getString("SUBJECT"));
-			teatherPdList.add(p.getString("TEATHER_NAME"));
-			timeDuringPdList.add(p.getString("TIMEDURING"));
+		
+		
+		
+		List<PageData> subjectlist = new ArrayList<>();
+		List<PageData> teatherlist = new ArrayList<>();
+		List<PageData> timeDuringlist = new ArrayList<>();
+		if(pdList.size()>0){
+			for(PageData p : pdList){
+				subjectPdList.add(p.getString("SUBJECT"));
+				teatherPdList.add(p.getString("TEATHER_NAME"));
+				timeDuringPdList.add(p.getString("TIMEDURING"));
+			}
+			subjectlist = subjectService.listBySubject(subjectPdList);
+			teatherlist = teatherService.listByTeatherName(teatherPdList);
+			timeDuringlist = timeduringService.listByTimeDuring(timeDuringPdList);
 		}
-		List<PageData> subjectlist = subjectService.listBySubject(subjectPdList);
-		List<PageData> teatherlist = teatherService.listByTeatherName(teatherPdList);
-		List<PageData> timeDuringlist = timeduringService.listByTimeDuring(timeDuringPdList);
 		map.put("subjectlist", subjectlist);
 		map.put("teatherlist", teatherlist);
 		map.put("timeDuringlist", timeDuringlist);
@@ -295,6 +303,7 @@ public class StudentController extends BaseController {
 		String class_id = pdClass.getString("CLASSROOM_ID");
 		PageData pdSeat = new PageData();
 		pdSeat.put("CLASSROOM_ID", class_id);
+		pdSeat.put("TIMEDURING", pd.getString("TIMEDURING"));
 		List<PageData> seatList = seatService.listByClassroomAndStatus(pdSeat);
 		
 		if(seatList.size()>0){
@@ -303,6 +312,63 @@ public class StudentController extends BaseController {
 			map.put("hasSeat", "N");
 		}
 		return map;
+	}
+	
+	@RequestMapping(value="/searchMsg")
+	@ResponseBody
+	public HashMap searchMsg(@RequestBody HashMap<String,Object> map) throws Exception{
+		PageData pd = new PageData();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		String schoolId = user.getSCHOOL_ID();
+		HashMap map1 = new HashMap<>();
+		pd = this.getPageData();
+		pd.put("NAME", (String)map.get("studentName"));
+		PageData studentPd = studentService.findByName(pd);
+		studentPd.put("HEAD_ID", studentPd.getString("STUDENT_ID"));
+		List<PageData> listPd = studentlistService.findByHeadId(studentPd);
+		JSONArray jSONArray = new JSONArray();
+		for(PageData pd1:listPd){
+			JSONObject object = new JSONObject();
+			String timeDuring = pd1.getString("TIMEDURING");
+			String grade = pd1.getString("GRADE");
+			String subject = pd1.getString("SUBJECT");
+			String teatherName = pd1.getString("TEATHER_NAME");
+			PageData pd2 = new PageData();
+			pd2.put("TIMEDURING", timeDuring);
+			pd2.put("STU_ID", studentPd.getString("HEAD_ID"));
+			pd2 = seatService.findByStuIdAndTimeduring(pd1);
+			if(null!=pd2){
+				continue;
+			}
+			object.put("TIMEDURING", timeDuring);
+			object.put("GRADE", grade);
+			object.put("SUBJECT", subject);
+			object.put("TEATHER_NAME", teatherName);
+			object.put("STUDENT_ID", studentPd.getString("HEAD_ID"));
+			
+			PageData schedulePd = new PageData();
+			schedulePd.put("TIMEDURING", timeDuring);
+			schedulePd.put("GRADE", grade);
+			schedulePd.put("SUBJECT", subject);
+			schedulePd.put("TEATHER_NAME", teatherName);
+			schedulePd.put("SCHOOL_ID", schoolId);
+			
+			List<PageData> scheduleList = scheduleService.listByParam(schedulePd);
+			PageData schedulePd1 = scheduleList.get(0);
+			schedulePd1.put("NAME", schedulePd1.getString("CLASSROOM"));
+			PageData classroomPd = classroomService.findBySchoolAndName(schedulePd1);
+			object.put("CLASSROOM_ID", classroomPd.getString("CLASSROOM_ID"));
+			classroomPd.put("TIMEDURING", timeDuring);
+			List<PageData> seatList = seatService.listByClassroomAndStatus(classroomPd);
+			JSONArray jSONArray1 = new JSONArray();
+			for(PageData pd3:seatList){
+				jSONArray1.add(pd3.getString("SEAT_ROW")+"-"+pd3.getString("SEAT_COLUMN"));
+			}
+			object.put("seatlist", jSONArray1);
+			jSONArray.add(object);
+		}
+		map1.put("seatResult", jSONArray);
+		return map1;
 	}
 	
 	
@@ -356,7 +422,7 @@ public class StudentController extends BaseController {
 	 * @param
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/chooseSeat")
+	/*@RequestMapping(value="/chooseSeat")
 	public ModelAndView chooseSeat()throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"选座位");
 		PageData pd = new PageData();
@@ -396,7 +462,7 @@ public class StudentController extends BaseController {
 		mv.addObject("list1", list1);
 		mv.addObject("disableList", disableList);
 		return mv;
-	}	
+	}	*/
 	
 	/**通过科目选择老师，二级联动
 	 * @param

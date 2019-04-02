@@ -42,13 +42,6 @@
 								<td><input type="text" name="CLASS_ID" id="CLASS_ID" value="${pd.CLASS_ID}" maxlength="36" placeholder="这里输入班级id" title="班级id" style="width:98%;"/></td>
 							</tr> --%>
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;">是否可用</td>
-								<td>
-									<select name="STATUS" ID="STATUS" style="width:98%;">
-										<option value="0" <c:if test="${pd.STATUS=='0'}">selected</c:if>>--可用--</option>
-										<option value="1" <c:if test="${pd.STATUS=='1'}">selected</c:if>>--不可用--</option>
-									</select>
-								</td>
 								<td style="width:75px;text-align: right;padding-top: 13px;">教室</td>
 								<td>
 									<select name="CLASSROOM_ID" ID="CLASSROOM_ID" style="width:98%;">
@@ -114,16 +107,6 @@
 		            time:2
 		        });
 				$("#COLUMN").focus();
-			return false;
-			}
-			if($("#STATUS").val()==""){
-				$("#STATUS").tips({
-					side:3,
-		            msg:'请选择状态值',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#STATUS").focus();
 			return false;
 			}
 			$("#Form").submit();

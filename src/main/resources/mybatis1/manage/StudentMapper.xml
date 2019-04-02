@@ -109,7 +109,7 @@
 		stu.CREATE_TIME AS CREATE_TIME,	
 		stu.UPDATE_TIME AS UPDATE_TIME
 		from Z_STUDENT stu
-		left join z_school sch on stu.SCHOOL_ID = sch.SCHOOL_ID
+		left join Z_SCHOOL sch on stu.SCHOOL_ID = sch.SCHOOL_ID
 		where 1=1 and stu.STATUS = "0"
 		and stu.SCHOOL_ID = #{pd.SCHOOL_ID}
 		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->

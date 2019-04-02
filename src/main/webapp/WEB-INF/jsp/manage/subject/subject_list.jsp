@@ -68,7 +68,7 @@
 									</th>
 									<th class="center" style="width:50px;">序号</th>
 									<th class="center">学科名称</th>
-									<th class="center">学科编码</th>
+									<!-- <th class="center">学科编码</th> -->
 									<th class="center">操作</th>
 								</tr>
 							</thead>
@@ -85,7 +85,7 @@
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${var.NAME}</td>
-											<td class='center'>${var.CODE}</td>
+											<%-- <td class='center'>${var.CODE}</td> --%>
 											<td class="center">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="无权限"></i></span>

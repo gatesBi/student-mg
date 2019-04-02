@@ -85,7 +85,7 @@ public class SeatController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("SEAT_ID", this.get32UUID());	//主键
+		//pd.put("SEAT_ID", this.get32UUID());	//主键
 		seatService.save(pd);
 		mv.addObject("msg","success");
 		mv.setViewName("save_result");

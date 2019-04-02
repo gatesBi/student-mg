@@ -23,7 +23,7 @@ import com.fh.util.Jurisdiction;
 import com.fh.util.PageData;
 import com.fh.util.SmsUtil;
 import com.fh.util.Tools;
-import com.fh.util.Watermark;
+/*import com.fh.util.Watermark;*/
 import com.fh.util.mail.SimpleMailSender;
 
 /** 
@@ -394,7 +394,7 @@ public class HeadController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/saveSys2")
+	/*@RequestMapping(value="/saveSys2")
 	public ModelAndView saveSys2() throws Exception{
 		if(!"admin".equals(Jurisdiction.getUsername())){return null;}	//非admin用户不能修改
 		ModelAndView mv = this.getModelAndView();
@@ -406,7 +406,7 @@ public class HeadController extends BaseController {
 		mv.addObject("msg","OK");
 		mv.setViewName("save_result");
 		return mv;
-	}
+	}*/
 	
 	/**保存系统设置3
 	 * @return

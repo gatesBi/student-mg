@@ -178,7 +178,6 @@
 								</td>
 							</tr> -->
 							<input type="hidden" v-model="teaSubJsonString" id="TEAANDSUBINFO" name="TEAANDSUBINFO" />
-							<input type="hidden" id="KEYINFO" name="KEYINFO" />
 							<tr>
 								<td style="text-align: center;" colspan="10">
 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
@@ -218,7 +217,7 @@
 						      width="220">
 						      <template slot-scope="scope">
 						        <el-button
-						          @click.native.prevent="deleteRow(scope.$index, tableData)"
+						          @click.native.prevent="deleteRow(scope.$index, scope.row)"
 						          type="text"
 						          size="small">
 						          	移除
@@ -386,8 +385,7 @@
 				  teatherlist:[],
 				  timeDuringlist:[],
 				  tableData:[],
-				  teaSubArray : [],
-				  keyArray : [],
+				  newAddData:[],
 				  teaSubJsonString:'',
 			  },
 			  created:function(){
@@ -407,15 +405,35 @@
 				  deleteRow:function(index, rows) {
 					var that = this;
 			        var url = '<%=basePath%>student/deleteStudentList.do';
-			        var param = rows[index];
+			        var param = rows;
 			        axios.post(url, param)
 					  .then(function (response) {
-						  rows.splice(index, 1);
-						  /* var result = response.data;
-						  that.subjectlist = result.subjectlist;
-						  that.timeDuringlist = result.timeDuringlist;
-						  that.teatherlist = result.teatherlist;
-					    console.log(response); */
+						  //rows.splice(index, 1);
+						  that.tableData.splice(index, 1);
+						  //that.tableData.splice(index, 1);
+						  /* if(that.newAddData.length>0){
+							  for(var i=0;i<that.newAddData.length;i++){
+								  for(var j=0;j<that.tableData.length;j++){
+									  if(that.newAddData[i].GRADE == that.newAddData[j].GRADE && 
+										  that.newAddData[i].TIMEDURING == that.newAddData[j].TIMEDURING &&
+										  that.newAddData[i].SUBJECT == that.newAddData[j].SUBJECT &&
+										  that.newAddData[i].TEATHER == that.newAddData[j].TEATHER){
+										  that.newAddData.splice(i, 1);
+									  }
+								  }
+							  }
+						  } */
+						  if(that.newAddData.length>0){
+							  for(var i=0;i<that.newAddData.length;i++){
+								  if(that.newAddData[i].GRADE == rows.GRADE && 
+									  that.newAddData[i].TIMEDURING == rows.TIMEDURING &&
+									  that.newAddData[i].SUBJECT == rows.SUBJECT &&
+									  that.newAddData[i].TEATHER == rows.TEATHER){
+									  that.newAddData.splice(i, 1);
+								  }
+							  }
+						  }
+						  that.teaSubJsonString = JSON.stringify(that.newAddData);
 					  }).catch(function (error) { 
 					    console.log(error);
 					  });
@@ -458,59 +476,6 @@
 						this.changeParam();
 					},
 					
-					/* addStudentList:function(){
-					  	var that = this;
-						var gradeValue = that.GRADE;
-						var subjectValue = that.SUBJECT;
-						var timeduringValue = that.TIMEDURING;
-						var teatherValue = that.TEATHER;
-						
-						var teatheroptions=$("#TEATHER option:selected");
-						var teatherText = teatheroptions.text();
-						var subjectoptions = $("#SUBJECT option:selected");
-						var subjectText = subjectoptions.text();
-						
-						
-						that.GRADE='';
-						that.SUBJECT='';
-						that.TIMEDURING='';
-						that.TEATHER='';
-						$("#TIMEDURING").attr("disabled",true);
-						$("#SUBJECT").attr("disabled",true);
-						$("#TEATHER").attr("disabled",true);
-						
-						var dateStr=that.dateToString(new Date());
-						$("#teasublist").append(
-						"<tr>"
-						+"<td class='center'>"+gradeValue+"</td>"
-						+"<td class='center'>"+subjectValue+"</td>"
-						+"<td class='center'>"+timeduringValue+"</td>"
-						+"<td class='center'>"+teatherValue+"</td>"
-						+"<td class='center'>"
-							+"<div class=\"hidden-sm hidden-xs btn-group\">"
-								+"<input type=\"hidden\" value=\""+dateStr+ "\" />"
-								+"<a class=\"btn btn-xs btn-danger\" @click=\"delst(row)\">"
-									+"<i class=\"ace-icon fa fa-trash-o bigger-120\" title=\"删除\"></i>"
-								+"</a>"
-							+"</div>"
-							+"</td>"
-						+"</tr>"
-						)
-						
-						var obj = {
-							"TEATHER_ID":teatherValue,
-							"SUBJECT_ID":subjectValue
-						};
-						var obj1 = {};
-						obj1[dateStr]=obj;
-						teaSubArray.push(obj1);
-						var teaSubstr = JSON.stringify(teaSubArray);
-						$("#TEAANDSUBINFO").val(teaSubstr);
-						that.tableData = teaSubstr;
-						keyArray.push(dateStr);
-						var keyArrayStr = JSON.stringify(keyArray);
-						$("#KEYINFO").val(keyArrayStr);
-					}, */
 					
 					addStudentList:function(){
 					  	var that = this;
@@ -528,10 +493,6 @@
 							that.$message.warning('年级、科目、时间段、老师必填');
 							return;
 						}
-						
-						
-						
-						
 						
 						var url = '<%=basePath%>student/checkIfHasSeat.do';
 						  var param = {
@@ -573,9 +534,9 @@
 										"TEATHER":teatherValue
 									}
 									that.tableData.push(pa);
+									that.newAddData.push(pa);
 									//var paStr = JSON.stringify(pa);
-									that.teaSubArray.push(pa); 
-									that.teaSubJsonString = JSON.stringify(that.teaSubArray);
+									that.teaSubJsonString = JSON.stringify(that.newAddData);
 							  }
 						    //console.log(response);
 						  }).catch(function (error) { 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.util.PageData;
+import com.fh.util.UuidUtil;
 import com.fh.service.manage.seat.SeatManager;
 
 /** 
@@ -28,7 +29,21 @@ public class SeatService implements SeatManager{
 	 * @throws Exception
 	 */
 	public void save(PageData pd)throws Exception{
-		dao.save("SeatMapper.save", pd);
+		String SEAT_ROW = pd.getString("SEAT_ROW");
+		String SEAT_COLUMN = pd.getString("SEAT_COLUMN");
+		int row_int = Integer.parseInt(SEAT_ROW);
+		int column_int = Integer.parseInt(SEAT_COLUMN);
+		PageData pd1 = new PageData();
+		for(int i = 1;i<=row_int;i++){
+			for(int j=1;j<=column_int;j++){
+				pd1.put("SEAT_ROW", String.valueOf(i));
+				pd1.put("SEAT_COLUMN", String.valueOf(j));
+				pd1.put("SEAT_ID", UuidUtil.get32UUID());
+				pd1.put("CLASSROOM_ID", pd.getString("CLASSROOM_ID"));
+				dao.save("SeatMapper.save", pd1);
+			}
+		}
+		
 	}
 	
 	/**删除

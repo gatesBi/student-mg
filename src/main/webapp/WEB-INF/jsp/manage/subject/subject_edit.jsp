@@ -35,10 +35,10 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;">学科名称:</td>
 								<td><input type="text" name="NAME" id="NAME" value="${pd.NAME}" maxlength="20" placeholder="这里输入学科名称" title="学科名称" style="width:98%;"/></td>
 							</tr>
-							<tr>
+							<%-- <tr>
 								<td style="width:75px;text-align: right;padding-top: 13px;">学科编码:</td>
 								<td><input type="text" name="CODE" id="CODE" value="${pd.CODE}" maxlength="36" placeholder="这里输入学科编码" title="学科编码" style="width:98%;"/></td>
-							</tr>
+							</tr> --%>
 							<tr>
 								<td style="text-align: center;" colspan="10">
 									<a class="btn btn-mini btn-primary" onclick="save();">保存</a>
@@ -84,7 +84,7 @@
 				$("#NAME").focus();
 			return false;
 			}
-			if($("#CODE").val()==""){
+			/* if($("#CODE").val()==""){
 				$("#CODE").tips({
 					side:3,
 		            msg:'请输入学科编码',
@@ -93,7 +93,7 @@
 		        });
 				$("#CODE").focus();
 			return false;
-			}
+			} */
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

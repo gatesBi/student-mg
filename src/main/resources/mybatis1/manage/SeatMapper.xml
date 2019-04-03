@@ -115,6 +115,53 @@
 		where CLASSROOM_ID = #{CLASSROOM_ID}
 	</select>
 	
+	<select id="listOneClassroomSeat" parameterType="pd" resultType="pd">
+		SELECT
+			s.SEAT_ROW as SEAT_ROW,
+			s.SEAT_COLUMN as SEAT_COLUMN,
+			stu.NAME as STUDENT_NAME
+		FROM
+			Z_SEAT s
+		LEFT JOIN Z_STUDENT stu ON s.STU_ID LIKE (
+			SELECT
+				STUDENT_ID
+			FROM
+				Z_STUDENT
+			WHERE
+				STUDENT_ID = (
+					SELECT
+						HEAD_ID
+					FROM
+						Z_STUDENTLIST
+					WHERE
+						GRADGE = #{GRADE}
+					AND SUBJECT = #{SUBJECT}
+					AND TEATHER_NAME = #{TEATHER_NAME}
+					AND TIMEDURING = #{TIMEDURING}
+				)
+		)
+		WHERE
+			CLASSROOM_ID = (
+			SELECT
+				CLASSROOM_ID
+			FROM
+				Z_CLASSROOM
+			WHERE
+				SCHOOL_ID = #{SCHOOL_ID}
+			AND NAME = (
+				SELECT
+					CLASSROOM
+				FROM
+					Z_SCHEDULE
+				WHERE
+					GRADGE = #{GRADE}
+				AND SUBJECT = #{SUBJECT}
+				AND TEATHER_NAME = #{TEATHER_NAME}
+				AND TIMEDURING = #{TIMEDURING}
+			)
+		)
+	</select>
+	
 	<select id="listByParams" parameterType="pd" resultType="pd">
 		select
 		<include refid="Field"></include>

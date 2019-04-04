@@ -137,6 +137,11 @@ public class StudentService implements StudentManager{
 	public void deleteAll(String[] ArrayDATA_IDS)throws Exception{
 		dao.delete("StudentMapper.deleteAll", ArrayDATA_IDS);
 	}
+
+	@Override
+	public PageData findByParams(PageData pd) throws Exception {
+		return (PageData)dao.findForObject("StudentMapper.findByParams", pd);
+	}
 	
 }
 

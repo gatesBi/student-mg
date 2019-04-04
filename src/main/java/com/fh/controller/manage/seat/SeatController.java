@@ -289,7 +289,7 @@ public class SeatController extends BaseController {
 		return mv;
 	}
 	
-	@RequestMapping(value="/chooseClassroom")
+	/*@RequestMapping(value="/chooseClassroom")
 	@ResponseBody
 	public HashMap getParams(@RequestBody HashMap<String,Object> map) throws Exception{
 		PageData pd = new PageData();
@@ -318,7 +318,7 @@ public class SeatController extends BaseController {
 		map.put("disableList", disableSeatList);
 		
 		return map;
-	}
+	}*/
 	
 	@RequestMapping(value="/saveChoose")
 	@ResponseBody
@@ -347,6 +347,69 @@ public class SeatController extends BaseController {
 		}
 		map1.put("msg", "success");
 		return map1;
+	}
+	
+	@RequestMapping(value="/initParam")
+	@ResponseBody
+	public HashMap initParam() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"seat Detail");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		HashMap<String,Object> map = new HashMap<>();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		List<PageData> gradeList = gradeService.listAll(pd);
+		List<PageData> teatherlist = teatherService.listAll(pd);
+		List<PageData> subjectlist = subjectService.listAll(pd);
+		List<PageData> timeduringlist = timeduringService.listAll(pd);
+		map.put("pd", pd);
+		map.put("gradeList", gradeList);
+		map.put("teatherlist", teatherlist);
+		map.put("subjectlist", subjectlist);
+		map.put("timeduringlist", timeduringlist);
+		return map;
+	}
+	
+	@RequestMapping(value="/goDetail")
+	public ModelAndView goDetail() throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"seat Detail");
+		//if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		List<PageData> gradeList = gradeService.listAll(pd);
+		List<PageData> teatherlist = teatherService.listAll(pd);
+		List<PageData> subjectlist = subjectService.listAll(pd);
+		List<PageData> timeduringlist = timeduringService.listAll(pd);
+		mv.addObject("pd", pd);
+		mv.addObject("gradeList", gradeList);
+		mv.addObject("teatherlist", teatherlist);
+		mv.addObject("subjectlist", subjectlist);
+		mv.addObject("timeduringlist", timeduringlist);
+		mv.setViewName("manage/seat/seat_detail");
+		return mv;
+	}
+	
+	@RequestMapping(value="/searchSeatMsg")
+	@ResponseBody
+	public HashMap searchSeatMsg(@RequestBody HashMap<String,Object> map) throws Exception{
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
+		pd.put("SCHOOL_ID", user.getSCHOOL_ID());
+		pd.put("GRADE", (String)map.get("GRADE"));
+		pd.put("SUBJECT", (String)map.get("SUBJECT"));
+		pd.put("TIMEDURING", (String)map.get("TIMEDURING"));
+		pd.put("TEATHER_NAME", (String)map.get("TEATHER"));
+		PageData studentPd = studentService.findByParams(pd);
+		pd.put("STUDENT_ID", studentPd.getString("STUDENT_ID"));
+		List<PageData> listOneClassroomSeat = seatService.listOneClassroomSeat(pd);
+		List<List<Map<String,String>>> seatList = SeatUtil.getSeatList(listOneClassroomSeat);
+		map.put("seatList", seatList);
+		return map;
 	}
 	
 	@InitBinder

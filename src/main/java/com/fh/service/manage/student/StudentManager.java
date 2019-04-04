@@ -48,6 +48,8 @@ public interface StudentManager{
 	 */
 	public PageData findById(PageData pd)throws Exception;
 	
+	public PageData findByParams(PageData pd)throws Exception;
+	
 	/**通过Name获取数据
 	 * @param pd
 	 * @throws Exception

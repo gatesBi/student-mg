@@ -142,6 +142,26 @@
 		<include refid="tableName"></include>
 	</select>
 	
+	
+	<select id="findByParams" parameterType="pd" resultType="pd">
+		SELECT
+			STUDENT_ID
+		FROM
+			Z_STUDENT
+		WHERE
+			STUDENT_ID = (
+				SELECT
+					HEAD_ID
+				FROM
+					Z_STUDENTLIST
+				WHERE
+					GRADE = #{GRADE}
+				AND SUBJECT = #{SUBJECT}
+				AND TEATHER_NAME = #{TEATHER_NAME}
+				AND TIMEDURING = #{TIMEDURING}
+				)
+	</select>
+	
 	<!-- 批量删除 -->
 	<delete id="deleteAll" parameterType="String">
 		delete from

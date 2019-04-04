@@ -52,6 +52,17 @@
   span{
   	font-size:20px;
   }
+  
+table,table tr th, table tr td {
+      border:1px solid #a8aeb2;
+      padding: 5px 10px;
+}
+table {
+      min-height: 25px;
+      line-height: 25px;
+      text-align: center;
+      border-collapse: collapse;}
+
 </style>
 
 
@@ -67,27 +78,65 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12" id="app" style="margin-top: 10px;">
+						
+						
+						
+						
+							<el-row :gutter="20">
+							  <el-col :span="4"><div class="grid-content bg-purple">
+							  
+							  	<select v-model="GRADE" name="GRADE" ID="GRADE" style="width:98%;" @change="changeGrade">
+									<option value="">--请选择年级--</option>
+									<c:forEach var="item" items="${gradeList }">
+										<option value="${item.NAME }"
+										<c:if test="${pd.GRADE==item.NAME}">selected</c:if>>
+										${item.NAME }</option>
+									</c:forEach>
+								</select>
+							  </div></el-col>
+							  <el-col :span="4"><div class="grid-content bg-purple">
+							  	<select v-model="SUBJECT" name="SUBJECT" ID="SUBJECT" style="width:98%;" @change="changeParam()" disabled>
+									<option value="">--请选择学科--</option>
+									<option v-for="subject in subjectlist">{{subject.NAME}}</option>
+								</select>
+							  </div></el-col>
+							  <el-col :span="4"><div class="grid-content bg-purple">
+							  	<select v-model="TIMEDURING" name="TIMEDURING" ID="TIMEDURING" style="width:98%;" @change="changeParam()" disabled>
+									<option value="">--请选择时间段--</option>
+									<option v-for="timeduring in timeDuringlist" v-bind:value="timeduring.TIMEDURING">{{timeduring.TIMEDURING}}</option>
+								</select>
+							  </div></el-col>
+							  <el-col :span="4"><div class="grid-content bg-purple">
+							  	<select v-model="TEATHER" name="TEATHER" ID="TEATHER" style="width:98%;" @change="changeParam()" disabled>
+									<option value="">--请选择老师--</option>
+									<option v-for="teather in teatherlist">{{teather.NAME}}</option>
+								</select>
+							  </div></el-col>
+							  <el-col :span="4"><div class="grid-content bg-purple">
+							  	<button @click="searchSeatMsg()">查询座位信息</button>
+							  </div></el-col>
+							</el-row>
 							
-							<el-container>
-							    <el-header>
-							    	<el-row>
-									  <el-col :span="4">
-									  	<div class="grid-content">
-									  		<el-input v-model="studentName" placeholder="请输入学生姓名"></el-input>
-									  	</div>
-									  </el-col>
-									  <el-col :span="4">
-										  <div class="grid-content">
-										  	<el-button slot="append" icon="el-icon-search" @click="searchMsg"></el-button>
-										  </div>
-									  </el-col>
-									</el-row>
-								</el-header>
-							  <el-main>
-							  	
-								
-							  </el-main>
-							</el-container>
+							
+							
+							
+							<el-row :gutter="20">
+								  <el-col :span="12" :offset="6"><div class="grid-content bg-purple">
+								  
+								  <table   class="clearfix bigTable" id='downloaddata'>
+							      <tr v-for='(item, index) in tableData'>
+							        <template v-for='items in item'>
+							          <template  v-for='(itemss, indexs) in items'>
+							            <td>{{itemss}}</td>
+							          </template>
+							        </template>
+							      </tr>
+							     </table>
+								  
+								  </div></el-col>
+								</el-row>
+							
+							
 							
 							
 							
@@ -127,115 +176,92 @@
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
 		$(top.hangge());//关闭加载状态
-		
+		$(function() {
+			$("#GRADE").trigger("change");
+			$("#SUBJECT").trigger("change");
+			$("#TIMEDURING").trigger("change");
+			$("#TEATHER").trigger("change");
+		});
 		var app = new Vue({
-		  el: '#app',
-		  data: {
-		    studentName: '',
-		    studentId:'',
-		    row:["","","","","","","","","","","",""],
-		    column:["","","","","","","","","","","",""],
-		    //seatMsg:[{a:'',b:'',list:[]},{a:'',b:'',list:[]}],
-		    seatMsg:[],
-		    isHidden:[
-		    	{
-		    		cut:true
-		    	}, {
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},{
-		    		cut:true
-		    	},         
-		    ],
-		  },
-		  methods:{
-		    initHidden:function(){
-		    	var that = this;
-		    	that.isHidden = [{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},{cut:true},]
-		    	that.row=["","","","","","","","","","","",""];
-		    	that.column=["","","","","","","","","","","",""];
-		    },
-			searchMsg:function(){
-				var that = this;
-		        var url = '<%=basePath%>student/searchMsg.do';
-		        var param = {
-		        	studentName:that.studentName,	
-		        };
-		        axios.post(url, param)
-				  .then(function (response) {
-					if(response.data.seatResult.length>0){
-						that.seatMsg = response.data.seatResult;
-						that.studentId = that.seatMsg[0].STUDENT_ID;
-						that.initHidden();
-					}else{
-						that.$message({
-				          message: '无可选座位',
-				          type: 'warning'
-				        });
-						return;
-					}
+
+			  el: '#app',
+			  data: {
+				  GRADE:'',
+				  SUBJECT:'',
+				  TIMEDURING:'',
+				  TEATHER:'',
+				  STUDENTLIST_ID:'',
+				  subjectlist:[],
+				  teatherlist:[],
+				  timeDuringlist:[],
+				  tableData:[],
+			  },
+			  created:function(){
+				  this.changeParam();
+				  if(this.GRADE != '' && this.GRADE != null){
+					    $("#TIMEDURING").attr("disabled",false);
+						$("#SUBJECT").attr("disabled",false);
+						$("#TEATHER").attr("disabled",false);
+				  }
+			  },
+			  methods:{
+				  changeParam:function(){
+					  var that = this;
+					  var url = '<%=basePath%>student/getParams.do';
+					  var param = {
+							  GRADE:that.GRADE,
+							  SUBJECT:that.SUBJECT,
+							  TIMEDURING:that.TIMEDURING,
+							  TEATHER:that.TEATHER,
+					  };
+					  axios.post(url, param)
+					  .then(function (response) {
+						  var result = response.data;
+						  that.subjectlist = result.subjectlist;
+						  that.timeDuringlist = result.timeDuringlist;
+						  that.teatherlist = result.teatherlist;
+					    console.log(response);
+					  }).catch(function (error) { 
+					    console.log(error);
+					  });
+				  },
+				  
+				  changeGrade:function(){
+					  	var that = this;
+						if($("#GRADE").val() != ''){
+							$("#TIMEDURING").attr("disabled",false);
+							$("#SUBJECT").attr("disabled",false);
+							$("#TEATHER").attr("disabled",false);
+						}else{
+							$("#TIMEDURING").attr("disabled",true);
+							$("#SUBJECT").attr("disabled",true);
+							$("#TEATHER").attr("disabled",true);
+							that.TIMEDURING = '';
+							that.SUBJECT = '';
+							that.TEATHER = '';
+						}
+						this.changeParam();
+					},
 					
-				  }).catch(function (error) { 
-				    console.log(error);
-				  });
-			},
-			saveSeat:function(index){
-				var that = this;
-				if(that.row[index]=="" || that.column[index]==""){
-					this.$message({
-			          message: '排与列不能为空',
-			          type: 'warning'
-			        });
-					return;
-				}
-				var url = '<%=basePath%>seat/saveChoose.do';
-				var param = {
-					studentId:that.studentId,
-					row:that.row[index],
-					column:that.column[index],
-					classId:that.seatMsg[index].CLASSROOM_ID,
-					timeduring:that.seatMsg[index].TIMEDURING,
-				};
-				axios.post(url, param)
-				  .then(function (response) {
-					  if(response.data.msg == "success"){
-						  that.$message({
-					          message: '保存成功',
-					          type: 'success'
-					        });
-						  that.isHidden[index].cut = !that.isHidden[index].cut;
-					  }else{
-						  that.$message({
-					          message: response.data.result,
-					          type: 'error'
-					        });
-					  }
-				  }).catch(function (error) { 
-					  that.$message({
-				          message: '保存失败,失败原因'+error,
-				          type: 'error'
-				        });
-				    //console.log(error);
-				  });
-			}
-		  },
+					searchSeatMsg:function(){
+					  var that = this;
+					  var url = '<%=basePath%>seat/searchSeatMsg.do';
+					  var param = {
+							  GRADE:that.GRADE,
+							  SUBJECT:that.SUBJECT,
+							  TIMEDURING:that.TIMEDURING,
+							  TEATHER:that.TEATHER,
+					  };
+					  axios.post(url, param)
+					  .then(function (response) {
+						  var result = response.data;
+						  that.tableData = result.seatList;
+					    console.log(response);
+					  }).catch(function (error) { 
+					    console.log(error);
+					  });
+					}
+			  },
 		})
 		
 	</script>

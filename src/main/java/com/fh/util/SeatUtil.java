@@ -1,27 +1,38 @@
 package com.fh.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SeatUtil {
-    public static List<String> getSeatList(List<PageData> pageDatas) {
-        ArrayList<String> list = new ArrayList<>();
+    public static List<List<Map<String,String>>> getSeatList(List<PageData> pageDatas) {
+    	List<List<Map<String,String>>> list = new ArrayList<>();
 
         int currentRow;
         int currentColumn;
 
-        char[][] seats = getInitSeats(pageDatas);
+        String[][] seats = getInitSeats(pageDatas);
 
         for (PageData pageData : pageDatas) {
             currentRow = s2i(pageData.getString("SEAT_ROW"));
             currentColumn = s2i(pageData.getString("SEAT_COLUMN"));
-            seats[currentRow-1][currentColumn-1] = 'c';
+            if(pageData.getString("STUDENT_NAME") != null){
+            	seats[currentRow-1][currentColumn-1] = pageData.getString("STUDENT_NAME");
+            }else{
+            	seats[currentRow-1][currentColumn-1] = "O";
+            }
         }
 
-        for (char[] seat : seats) {
-            list.add("'" + String.valueOf(seat) + "'");
+        for (int j = 0;j<seats.length;j++) {
+        	List<Map<String,String>> list1 = new ArrayList<>();
+        	for(int i = 0;i<seats[j].length;i++){
+        		Map<String,String> map = new HashMap<>();
+        		map.put("value", seats[j][i]);
+        		list1.add(map);
+        	}
+        	list.add(j, list1);
         }
-
         return list;
     }
 
@@ -51,7 +62,7 @@ public class SeatUtil {
         return list;
     }
 
-    private static char[][] getInitSeats(List<PageData> pageDatas) {
+    private static String[][] getInitSeats(List<PageData> pageDatas) {
         ArrayList<String> list = new ArrayList<>();
         int maxRow = 0;
         int maxColumn = 0;
@@ -70,11 +81,11 @@ public class SeatUtil {
             }
         }
 
-        char[][] seats = new char[maxRow][maxColumn];
+        String[][] seats = new String[maxRow][maxColumn];
 
         for (int i = 0; i < maxRow; i++) {
             for (int j = 0; j < maxColumn; j++) {
-                seats[i][j] = '_';
+                seats[i][j] = "_";
             }
         }
 

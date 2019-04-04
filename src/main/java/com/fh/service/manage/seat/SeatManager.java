@@ -60,6 +60,9 @@ public interface SeatManager{
 	 */
 	public List<PageData> listByParams(PageData pd)throws Exception;
 	
+	
+	public List<PageData> listOneClassroomSeat(PageData pd)throws Exception;
+	
 	/**通过id获取数据
 	 * @param pd
 	 * @throws Exception

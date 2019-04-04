@@ -128,6 +128,12 @@ public class SeatService implements SeatManager{
 		return (PageData)dao.findForObject("SeatMapper.findByStuIdAndTimeduring", pd);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<PageData> listOneClassroomSeat(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("SeatMapper.listOneClassroomSeat", pd);
+	}
+
 	
 }
 

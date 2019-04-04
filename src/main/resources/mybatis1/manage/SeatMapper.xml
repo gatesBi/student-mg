@@ -91,7 +91,7 @@
 	</select>
 	
 	<!-- 根据classroomid与时间段查询是否还有座位 -->
-	<select id="listByClassroomAndStatus" parameterType="pd" resultType="pd">
+	<!-- <select id="listByClassroomAndStatus" parameterType="pd" resultType="pd">
 		select
 			SEAT_ROW,
 			SEAT_COLUMN,
@@ -105,7 +105,7 @@
 		where CLASSROOM_ID = #{CLASSROOM_ID}
 		
 		and (TIMEDURING NOT LIKE CONCAT(CONCAT('%', #{TIMEDURING}),'%') or TIMEDURING is null)
-	</select>
+	</select> -->
 	
 	<select id="listByClassroomId" parameterType="pd" resultType="pd">
 		select

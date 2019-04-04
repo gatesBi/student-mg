@@ -304,10 +304,20 @@ public class StudentController extends BaseController {
 		String class_id = pdClass.getString("CLASSROOM_ID");
 		PageData pdSeat = new PageData();
 		pdSeat.put("CLASSROOM_ID", class_id);
-		pdSeat.put("TIMEDURING", pd.getString("TIMEDURING"));
-		List<PageData> seatList = seatService.listByClassroomAndStatus(pdSeat);
-		
-		if(seatList.size()>0){
+		List<PageData> pd1 = seatService.listByClassroomId(pdSeat);
+		boolean flag = false;
+		if(pd1 != null && pd1.size()>0){
+			for(PageData pd2:pd1){
+				pd2.put("HEAD_ID", pd2.getString("SEAT_ID"));
+				pd2.put("TIMEDURING", pd.getString("TIMEDURING"));
+				PageData pd3 = seatlistService.findByHeadIdAndTimeduring(pd2);
+				if(pd3 == null){
+					flag = true;
+					break;
+				}
+			}
+		}
+		if(flag){
 			map.put("hasSeat", "Y");
 		}else{
 			map.put("hasSeat", "N");

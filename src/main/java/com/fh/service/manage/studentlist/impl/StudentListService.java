@@ -92,14 +92,15 @@ public class StudentListService implements StudentListManager{
 
 	@Override
 	public void deleteById(PageData pd) throws Exception {
-		PageData findById = this.findById(pd);
-		String headid = findById.getString("HEAD_ID");
-		PageData pd1 = new PageData();
-		pd1.put("STU_ID", headid);
-		pd1.put("TIMEDURING", pd.getString("TIMEDURING"));
 		dao.delete("StudentListMapper.deleteById", pd);
-		dao.delete("SeatListMapper.deleteByStuIdAndTimeDuring", pd1);
-		
+		PageData findById = this.findById(pd);
+		if(findById != null && findById.getString("HEAD_ID") != null){
+			String headid = findById.getString("HEAD_ID");
+			PageData pd1 = new PageData();
+			pd1.put("STU_ID", headid);
+			pd1.put("TIMEDURING", pd.getString("TIMEDURING"));
+			dao.delete("SeatListMapper.deleteByStuIdAndTimeDuring", pd1);
+		}
 	}
 	
 }

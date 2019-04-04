@@ -104,27 +104,7 @@
 				$("#NAME").focus();
 			return false;
 			}
-			if($("#AGE").val()==""){
-				$("#AGE").tips({
-					side:3,
-		            msg:'请输入老师年龄',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#AGE").focus();
-			return false;
-			}
-			if($("#GENDER").val()==""){
-				$("#GENDER").tips({
-					side:3,
-		            msg:'请输入老师性别',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#GENDER").focus();
-			return false;
-			}
-			if($("#CODE").val()==""){
+			/* if($("#CODE").val()==""){
 				$("#CODE").tips({
 					side:3,
 		            msg:'请输入老师编号',
@@ -133,7 +113,7 @@
 		        });
 				$("#CODE").focus();
 			return false;
-			}
+			} */
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

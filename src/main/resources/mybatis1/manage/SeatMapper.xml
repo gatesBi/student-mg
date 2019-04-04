@@ -11,9 +11,7 @@
 	<sql id="Field">
 		SEAT_ROW,
 		SEAT_COLUMN,
-		STU_ID,
 		CLASSROOM_ID,
-		TIMEDURING,
 		SEAT_ID
 	</sql>
 	
@@ -21,9 +19,7 @@
 	<sql id="FieldValue">
 		#{SEAT_ROW},
 		#{SEAT_COLUMN},
-		#{STU_ID},	
 		#{CLASSROOM_ID},
-		#{TIMEDURING},	
 		#{SEAT_ID}
 	</sql>
 	
@@ -53,8 +49,6 @@
 		set 
 			SEAT_ROW = #{SEAT_ROW},
 			SEAT_COLUMN = #{SEAT_COLUMN},
-			TIMEDURING = #{TIMEDURING},
-			STU_ID = #{STU_ID}
 			where 
 			SEAT_ID = #{SEAT_ID}
 	</update>
@@ -99,12 +93,18 @@
 	<!-- 根据classroomid与时间段查询是否还有座位 -->
 	<select id="listByClassroomAndStatus" parameterType="pd" resultType="pd">
 		select
-		<include refid="Field"></include>
-		from 
-		<include refid="tableName"></include>
+			SEAT_ROW,
+			SEAT_COLUMN,
+			CLASSROOM_ID,
+			SEAT_ID
+		from
+			Z_SEAT s
+		left join (select HEAD_ID,STU_ID,TIMEDURING,SEATLIST_ID from Z_SEATLIST where TIMEDURING is not #{TIMEDURING} ) sl on 
+		s.SEAT_ID = sl.HEAD_ID
+			
 		where CLASSROOM_ID = #{CLASSROOM_ID}
+		
 		and (TIMEDURING NOT LIKE CONCAT(CONCAT('%', #{TIMEDURING}),'%') or TIMEDURING is null)
-		order by SEAT_ROW
 	</select>
 	
 	<select id="listByClassroomId" parameterType="pd" resultType="pd">
@@ -119,27 +119,20 @@
 		SELECT
 			s.SEAT_ROW as SEAT_ROW,
 			s.SEAT_COLUMN as SEAT_COLUMN,
-			stu.NAME as STUDENT_NAME
+			tt.STUNAME as STUDENT_NAME
 		FROM
 			Z_SEAT s
-		LEFT JOIN Z_STUDENT stu ON s.STU_ID LIKE CONCAT(CONCAT('%', #{STUDENT_ID}),'%') <!-- (
-			SELECT
-				STUDENT_ID
-			FROM
-				Z_STUDENT
-			WHERE
-				STUDENT_ID = (
-					SELECT
-						HEAD_ID
-					FROM
-						Z_STUDENTLIST
-					WHERE
-						GRADE = #{GRADE}
-					AND SUBJECT = #{SUBJECT}
-					AND TEATHER_NAME = #{TEATHER_NAME}
-					AND TIMEDURING = #{TIMEDURING}
-				)
-		) -->
+		LEFT JOIN 
+		
+		(select sl.HEAD_ID as HEAD_ID,stu.NAME as STUNAME
+		from 
+		Z_STUDENT stu 
+		left join 
+		Z_SEATLIST sl 
+		on stu.STUDENT_ID = sl.STU_ID 
+		where sl.TIMEDURING =  #{TIMEDURING}) tt
+		
+		on s.seat_id = tt.HEAD_ID
 		WHERE
 			CLASSROOM_ID = (
 			SELECT
@@ -174,21 +167,15 @@
 		<if test="SEAT_COLUMN != null and SEAT_COLUMN !=''">
 			and SEAT_COLUMN = #{SEAT_COLUMN}
 		</if>
-		<if test="STU_ID != null and STU_ID !=''">
-			and STU_ID = #{STU_ID}
-		</if>
 		<if test="CLASSROOM_ID != null and CLASSROOM_ID !=''">
 			and CLASSROOM_ID = #{CLASSROOM_ID}
-		</if>
-		<if test="TIMEDURING != null and TIMEDURING !=''">
-			and TIMEDURING = #{TIMEDURING}
 		</if>
 		<if test="SEAT_ID != null and SEAT_ID !=''">
 			and SEAT_ID = #{SEAT_ID}
 		</if>
 	</select>
 	
-	<select id="findByStuIdAndTimeduring" parameterType="pd" resultType="pd">
+	<!-- <select id="findByStuIdAndTimeduring" parameterType="pd" resultType="pd">
 		select
 		<include refid="Field"></include>
 		from 
@@ -200,7 +187,7 @@
 		<if test="TIMEDURING != null and TIMEDURING !=''">
 			and TIMEDURING LIKE CONCAT(CONCAT('%', #{TIMEDURING}),'%')
 		</if>
-	</select>
+	</select> -->
 	
 	<select id="editByParams" parameterType="pd">
 		update
@@ -212,14 +199,8 @@
 			<if test="SEAT_COLUMN != null and SEAT_COLUMN !=''">
 				SEAT_COLUMN = #{SEAT_COLUMN},
 			</if>
-			<if test="STU_ID != null and STU_ID !=''">
-				STU_ID = #{STU_ID},
-			</if>
 			<if test="CLASSROOM_ID != null and CLASSROOM_ID !=''">
 				CLASSROOM_ID = #{CLASSROOM_ID},
-			</if>
-			<if test="TIMEDURING != null and TIMEDURING !=''">
-				TIMEDURING = #{TIMEDURING},
 			</if>
 		</trim>
 		where 

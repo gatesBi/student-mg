@@ -109,6 +109,16 @@
 				$("#COLUMN").focus();
 			return false;
 			}
+			if($("#CLASSROOM_ID").val()==""){
+				$("#CLASSROOM_ID").tips({
+					side:3,
+		            msg:'请选择教室',
+		            bg:'#AE81FF',
+		            time:2
+		        });
+				$("#CLASSROOM_ID").focus();
+			return false;
+			}
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();

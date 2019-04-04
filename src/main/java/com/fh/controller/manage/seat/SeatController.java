@@ -37,6 +37,7 @@ import com.fh.service.manage.grade.GradeManager;
 import com.fh.service.manage.schedule.ScheduleManager;
 import com.fh.service.manage.school.SchoolManager;
 import com.fh.service.manage.seat.SeatManager;
+import com.fh.service.manage.seatlist.SeatListManager;
 import com.fh.service.manage.student.StudentManager;
 import com.fh.service.manage.studentlist.StudentListManager;
 import com.fh.service.manage.subject.SubjectManager;
@@ -73,6 +74,8 @@ public class SeatController extends BaseController {
 	private StudentListManager studentlistService;
 	@Resource(name="classroomService")
 	private ClassroomManager classroomService;
+	@Resource(name="seatlistService")
+	private SeatListManager seatlistService;
 	
 	/**保存
 	 * @param
@@ -337,13 +340,24 @@ public class SeatController extends BaseController {
 		}
 		PageData pdSeat = listByParams.get(0);
 		if(!pdSeat.isEmpty()){
+			
+			
+			PageData pd2 = new PageData();
+			pd2.put("TIMEDURING", (String)map.get("timeduring"));
+			pd2.put("HEAD_ID", pdSeat.getString("SEAT_ID"));
+			pd2 = seatlistService.findByHeadIdAndTimeduring(pd2);
+			if(pd2 != null){
+				map1.put("msg", "error");
+				map1.put("result", "此座位已经被占座，请选择其他座位");
+				return map1;
+			}
+			
 			PageData pd1 = new PageData();
-			String stuId = pdSeat.getString("STU_ID")==null?"":pdSeat.getString("STU_ID");
-			String timeduring = pdSeat.getString("TIMEDURING")==null?"":pdSeat.getString("TIMEDURING");
-			pd1.put("STU_ID", stuId+","+(String)map.get("studentId"));
-			pd1.put("TIMEDURING", timeduring+","+(String)map.get("timeduring"));
-			pd1.put("SEAT_ID", pdSeat.getString("SEAT_ID"));
-			seatService.editByParams(pd1);
+			pd1.put("HEAD_ID", pdSeat.getString("SEAT_ID"));
+			pd1.put("STU_ID", (String)map.get("studentId"));
+			pd1.put("TIMEDURING", (String)map.get("timeduring"));
+			pd1.put("SEATLIST_ID", this.get32UUID());
+			seatlistService.save(pd1);
 		}
 		map1.put("msg", "success");
 		return map1;
@@ -404,8 +418,6 @@ public class SeatController extends BaseController {
 		pd.put("SUBJECT", (String)map.get("SUBJECT"));
 		pd.put("TIMEDURING", (String)map.get("TIMEDURING"));
 		pd.put("TEATHER_NAME", (String)map.get("TEATHER"));
-		PageData studentPd = studentService.findByParams(pd);
-		pd.put("STUDENT_ID", studentPd.getString("STUDENT_ID"));
 		List<PageData> listOneClassroomSeat = seatService.listOneClassroomSeat(pd);
 		List<List<Map<String,String>>> seatList = SeatUtil.getSeatList(listOneClassroomSeat);
 		map.put("seatList", seatList);

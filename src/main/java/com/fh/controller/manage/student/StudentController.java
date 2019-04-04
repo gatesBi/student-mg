@@ -4,10 +4,8 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +31,7 @@ import com.fh.service.manage.grade.GradeManager;
 import com.fh.service.manage.schedule.ScheduleManager;
 import com.fh.service.manage.school.SchoolManager;
 import com.fh.service.manage.seat.SeatManager;
+import com.fh.service.manage.seatlist.SeatListManager;
 import com.fh.service.manage.student.StudentManager;
 import com.fh.service.manage.studentlist.StudentListManager;
 import com.fh.service.manage.subject.SubjectManager;
@@ -76,6 +75,8 @@ public class StudentController extends BaseController {
 	private StudentListManager studentlistService;
 	@Resource(name="classroomService")
 	private ClassroomManager classroomService;
+	@Resource(name="seatlistService")
+	private SeatListManager seatlistService;
 	
 	/**保存
 	 * @param
@@ -336,7 +337,7 @@ public class StudentController extends BaseController {
 			PageData pd2 = new PageData();
 			pd2.put("TIMEDURING", timeDuring);
 			pd2.put("STU_ID", studentPd.getString("HEAD_ID"));
-			pd2 = seatService.findByStuIdAndTimeduring(pd1);
+			pd2 = seatlistService.findByStuIdAndTimeduring(pd2);
 			if(null!=pd2){
 				continue;
 			}
@@ -359,10 +360,15 @@ public class StudentController extends BaseController {
 			PageData classroomPd = classroomService.findBySchoolAndName(schedulePd1);
 			object.put("CLASSROOM_ID", classroomPd.getString("CLASSROOM_ID"));
 			classroomPd.put("TIMEDURING", timeDuring);
-			List<PageData> seatList = seatService.listByClassroomAndStatus(classroomPd);
+			List<PageData> seatList = seatService.listByClassroomId(classroomPd);
 			JSONArray jSONArray1 = new JSONArray();
 			for(PageData pd3:seatList){
-				jSONArray1.add(pd3.getString("SEAT_ROW")+"-"+pd3.getString("SEAT_COLUMN"));
+				pd3.put("HEAD_ID", pd3.getString("SEAT_ID"));
+				pd3.put("TIMEDURING", timeDuring);
+				PageData pd4 = seatlistService.findByHeadIdAndTimeduring(pd3);
+				if(pd4==null){
+					jSONArray1.add(pd3.getString("SEAT_ROW")+"-"+pd3.getString("SEAT_COLUMN"));
+				}
 			}
 			object.put("seatlist", jSONArray1);
 			jSONArray.add(object);

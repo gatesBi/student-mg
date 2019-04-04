@@ -112,7 +112,7 @@ table {
 									<option v-for="teather in teatherlist">{{teather.NAME}}</option>
 								</select>
 							  </div></el-col>
-							  <el-col :span="4"><div class="grid-content bg-purple">
+							  <el-col :span="4"><div class="grid-content">
 							  	<button @click="searchSeatMsg()">查询座位信息</button>
 							  </div></el-col>
 							</el-row>
@@ -244,7 +244,15 @@ table {
 					},
 					
 					searchSeatMsg:function(){
-					  var that = this;
+					    var that = this;
+						var gradeValue = that.GRADE;
+						var subjectValue = that.SUBJECT;
+						var timeduringValue = that.TIMEDURING;
+						var teatherValue = that.TEATHER;
+					    if(gradeValue == "" || subjectValue == "" || timeduringValue == "" || teatherValue == ""){
+							that.$message.warning('年级、科目、时间段、老师必填');
+							return;
+						}
 					  var url = '<%=basePath%>seat/searchSeatMsg.do';
 					  var param = {
 							  GRADE:that.GRADE,

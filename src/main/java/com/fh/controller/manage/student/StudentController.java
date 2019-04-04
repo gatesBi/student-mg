@@ -390,6 +390,7 @@ public class StudentController extends BaseController {
 		User user = (User) SecurityUtils.getSubject().getSession().getAttribute(Const.SESSION_USER);
 		pd = this.getPageData();
 		pd.put("STUDENTLIST_ID", (String)map.get("STUDENTLIST_ID"));
+		pd.put("TIMEDURING", (String)map.get("TIMEDURING"));
 		studentlistService.deleteById(pd);
 		return map;
 	}

@@ -124,5 +124,13 @@
 		</foreach>
 	</delete>
 	
+	<!-- 根据stuid与时间段删除 -->
+	<delete id="deleteByStuIdAndTimeDuring" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			STU_ID = #{STU_ID} and TIMEDURING = #{TIMEDURING}
+	</delete>
+	
 	<!-- fh313596790qq(青苔) -->
 </mapper>

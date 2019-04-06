@@ -89,6 +89,11 @@ public class SeatListService implements SeatListManager{
 	public PageData findByHeadIdAndTimeduring(PageData pd) throws Exception {
 		return (PageData)dao.findForObject("SeatListMapper.findByHeadIdAndTimeduring", pd);
 	}
+
+	@Override
+	public void deleteByStudentId(PageData pd) throws Exception {
+		dao.delete("SeatListMapper.deleteByStudentId", pd);
+	}
 	
 }
 

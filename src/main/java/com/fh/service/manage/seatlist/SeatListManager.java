@@ -24,6 +24,12 @@ public interface SeatListManager{
 	 */
 	public void delete(PageData pd)throws Exception;
 	
+	/**删除
+	 * @param pd
+	 * @throws Exception
+	 */
+	public void deleteByStudentId(PageData pd)throws Exception;
+	
 	/**修改
 	 * @param pd
 	 * @throws Exception

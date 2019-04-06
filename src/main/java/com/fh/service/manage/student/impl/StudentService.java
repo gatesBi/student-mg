@@ -63,6 +63,8 @@ public class StudentService implements StudentManager{
 	 */
 	public void delete(PageData pd)throws Exception{
 		dao.delete("StudentMapper.delete", pd);
+		dao.delete("StudentListMapper.deleteByHeadId", pd);
+		dao.delete("SeatListMapper.deleteByStudentId", pd);
 	}
 	
 	/**修改

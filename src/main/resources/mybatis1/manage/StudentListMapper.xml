@@ -123,6 +123,14 @@
 		STUDENTLIST_ID = #{STUDENTLIST_ID}
 	</delete>
 	
+	<!-- 根据HEAD_ID删除 -->
+	<delete id="deleteByHeadId" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+		HEAD_ID = #{STUDENT_ID}
+	</delete>
+	
 	
 	<!-- 批量删除 -->
 	<delete id="deleteAll" parameterType="String">

@@ -92,8 +92,8 @@ public class StudentListService implements StudentListManager{
 
 	@Override
 	public void deleteById(PageData pd) throws Exception {
-		dao.delete("StudentListMapper.deleteById", pd);
 		PageData findById = this.findById(pd);
+		dao.delete("StudentListMapper.deleteById", pd);
 		if(findById != null && findById.getString("HEAD_ID") != null){
 			String headid = findById.getString("HEAD_ID");
 			PageData pd1 = new PageData();
@@ -101,6 +101,11 @@ public class StudentListService implements StudentListManager{
 			pd1.put("TIMEDURING", pd.getString("TIMEDURING"));
 			dao.delete("SeatListMapper.deleteByStuIdAndTimeDuring", pd1);
 		}
+	}
+
+	@Override
+	public void deleteByHeadId(PageData pd) throws Exception {
+		dao.delete("StudentListMapper.deleteByHeadId", pd);
 	}
 	
 }
